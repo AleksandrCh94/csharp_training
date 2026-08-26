@@ -7,17 +7,17 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 
-namespace SeleniumTests
+namespace WebaddressbookTests //пространство имен
 {
-    [TestFixture]
-    public class UntitledTestCase
+    [TestFixture] //метка
+    public class GroupCreationTests
     {
         private IWebDriver driver;
         private StringBuilder verificationErrors;
         private string baseURL;
         private bool acceptNextAlert = true;
 
-        [SetUp]
+        [SetUp] //метка, выполняется до теста
         public void SetupTest()
         {
             driver = new ChromeDriver();
@@ -25,7 +25,7 @@ namespace SeleniumTests
             verificationErrors = new StringBuilder();
         }
 
-        [TearDown]
+        [TearDown] //метка, выполняется после теста
         public void TeardownTest()
         {
             try
@@ -39,8 +39,8 @@ namespace SeleniumTests
             Assert.AreEqual("", verificationErrors.ToString());
         }
 
-        [Test]
-        public void TheUntitledTestCaseTest()
+        [Test] //метка, выполнение теста
+        public void ThGroupCreationTests()
         {
             driver.Navigate().GoToUrl(baseURL);
             driver.FindElement(By.Name("user")).Click();
