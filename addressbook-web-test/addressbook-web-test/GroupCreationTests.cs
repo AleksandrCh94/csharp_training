@@ -7,22 +7,22 @@ using NUnit.Framework;
 namespace WebAddressbookTests //пространство имен
 {
     [TestFixture] //метка
-    public class GroupCreationTests : BaseTest // наследование
+    public class GroupCreationTests : TestBase // наследование
     {       
         [Test] //метка, выполнение теста
         public void TheGroupCreationTests()
         {
-            GoToHomePage();
-            Login(new AccountData("admin", "secret"));
-            GoToGroupsPage();
-            InitNewGroupCreation();
+            navigationHelper.GoToHomePage();
+            loginLogoutHelper.Login(new AccountData("admin", "secret"));
+            navigationHelper.GoToGroupsPage();
+            groupHelper.InitNewGroupCreation();
             GroupData group = new GroupData("aaa");
             group.Header = "wegwg";
             group.Footer = "wrwer";
-            FillGroupForm(group);
-            SubmitGroupCreation();
-            ReturnToGroupsPage();
-            Logout();
+            groupHelper.FillGroupForm(group);
+            groupHelper.SubmitGroupCreation();
+            groupHelper.ReturnToGroupsPage();
+            loginLogoutHelper.Logout();
         }
     }
 }
