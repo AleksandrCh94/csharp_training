@@ -10,7 +10,7 @@ using OpenQA.Selenium.Support.UI;
 namespace WebAddressbookTests //пространство имен
 {
     [TestFixture] //метка
-    public class GroupCreationTests
+    public class ContactCreationTests
     {
         private IWebDriver driver;
         private StringBuilder verificationErrors;
@@ -40,18 +40,16 @@ namespace WebAddressbookTests //пространство имен
         }
 
         [Test] //метка, выполнение теста
-        public void TheGroupCreationTests()
+        public void TheUntitledTestCaseTest()
         {
             OpenHomePage();
             Login(new AccountData("admin", "secret"));
-            GoToGroupsPage();
-            InitNewGroupCreation();
-            GroupData group = new GroupData("aaa");
-            group.Header = "wegwg";
-            group.Footer = "wrwer";
-            FillGroupForm(group);
-            SubmitGroupCreation();
-            ReturnToGroupsPage();
+            InitNewContactCreation();
+            ContactData contact = new ContactData("alex");
+            contact.LastName = "chernenkov";
+            FillContactForm(contact);
+            SubmitContactCreation();
+            ReturnToHomePage();
             Logout();
         }
 
@@ -60,34 +58,27 @@ namespace WebAddressbookTests //пространство имен
             driver.FindElement(By.LinkText("Logout")).Click();
         }
 
-        private void ReturnToGroupsPage()
+        private void ReturnToHomePage()
         {
-            driver.FindElement(By.LinkText("group page")).Click();
+            driver.FindElement(By.LinkText("home page")).Click();
         }
 
-        private void SubmitGroupCreation()
+        private void SubmitContactCreation()
         {
-            driver.FindElement(By.Name("submit")).Click();
+            driver.FindElement(By.XPath("//input[19]")).Click();
         }
 
-        private void FillGroupForm(GroupData group)
+        private void FillContactForm(ContactData contact)
         {
-            driver.FindElement(By.Name("group_name")).Click();
-            driver.FindElement(By.Name("group_name")).SendKeys(group.Name);
-            driver.FindElement(By.Name("group_header")).Click();
-            driver.FindElement(By.Name("group_header")).SendKeys(group.Header);
-            driver.FindElement(By.Name("group_footer")).Click();
-            driver.FindElement(By.Name("group_footer")).SendKeys(group.Footer);
+            driver.FindElement(By.Name("firstname")).Click();
+            driver.FindElement(By.Name("firstname")).SendKeys(contact.FirstName);
+            driver.FindElement(By.Name("lastname")).Click();
+            driver.FindElement(By.Name("lastname")).SendKeys(contact.LastName);
         }
 
-        private void InitNewGroupCreation()
+        private void InitNewContactCreation()
         {
-            driver.FindElement(By.Name("new")).Click();
-        }
-
-        private void GoToGroupsPage()
-        {
-            driver.FindElement(By.LinkText("groups")).Click();
+            driver.FindElement(By.LinkText("add new")).Click();
         }
 
         private void Login(AccountData account)
