@@ -4,7 +4,7 @@ using System.Text;
 
 namespace addressbook_web_tests
 {
-    class Circle : Figure
+    public class Circle : Figure
     {
         private int radius; // ифна о радиусе
         

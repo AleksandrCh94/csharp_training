@@ -5,7 +5,7 @@ using System.Text;
 
 namespace addressbook_web_tests
 {
-    internal class Figure
+    public class Figure
     {
         private bool colored = false; // информация об имени
 

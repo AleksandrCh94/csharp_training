@@ -4,7 +4,7 @@ using System.Text;
 
 namespace addressbook_web_tests
 {
-    class Square : Figure
+    public class Square : Figure
     {
         private int size; // инфа о стороне
 
