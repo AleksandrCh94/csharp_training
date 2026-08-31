@@ -7,7 +7,7 @@ using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
 
-namespace WebAddressbookTests
+namespace addressbook_web_test.appmanager
 {
     public class HelperBase
     {

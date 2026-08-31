@@ -6,8 +6,9 @@ using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
+using WebAddressbookTests;
 
-namespace WebAddressbookTests
+namespace addressbook_web_test.appmanager
 {
     public class GroupHelper : HelperBase
     {

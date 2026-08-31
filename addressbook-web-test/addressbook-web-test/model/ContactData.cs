@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace WebAddressbookTests
+namespace addressbook_web_test.model
 {
     public class ContactData
     {
