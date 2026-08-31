@@ -10,13 +10,15 @@ namespace WebAddressbookTests
     {                
         protected ApplicationManager app;
 
-        [SetUp]
+        [SetUp] // метка выполнения кода перед тестами
         public void SetupTest()
         {
             app = new ApplicationManager();
+            app.Navigator.GoToHomePage();
+            app.Auth.Login(new AccountData("admin", "secret"));
         }
 
-        [TearDown]
+        [TearDown] // метка выполнения кода после тестов
         public void TeardownTest()
         {
             app.Stop();

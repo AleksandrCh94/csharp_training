@@ -15,18 +15,26 @@ namespace WebAddressbookTests
         protected IWebDriver driver;
         protected string baseURL;
 
-        protected LoginLogoutHelper loginLogoutHelper;
+        protected AuthorizationHelper authorizationHelper;
         protected NavigationHelper navigationHelper;
         protected GroupHelper groupHelper;   
 
         public ApplicationManager()
         {
             driver = new ChromeDriver();
-            baseURL = "http://localhost/addressbook";
+            baseURL = "http://localhost";
 
-            loginLogoutHelper = new LoginLogoutHelper(driver);
-            navigationHelper = new NavigationHelper(driver, baseURL);
-            groupHelper = new GroupHelper(driver);
+            authorizationHelper = new AuthorizationHelper(this);
+            navigationHelper = new NavigationHelper(this, baseURL);
+            groupHelper = new GroupHelper(this);
+        }
+
+        public IWebDriver Driver
+        {
+            get
+            {
+                return driver;
+            }
         }
 
         public void Stop()
@@ -41,11 +49,11 @@ namespace WebAddressbookTests
             }
         }
 
-        public LoginLogoutHelper Auth
+        public AuthorizationHelper Auth
         {
             get 
             { 
-                return loginLogoutHelper; 
+                return authorizationHelper; 
             }
         }
 

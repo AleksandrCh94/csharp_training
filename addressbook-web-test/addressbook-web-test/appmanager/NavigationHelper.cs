@@ -6,6 +6,7 @@ using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
+using WebAddressbookTests;
 
 namespace addressbook_web_test.appmanager
 {
@@ -13,15 +14,15 @@ namespace addressbook_web_test.appmanager
     {
         private string baseURL;
 
-        public NavigationHelper(IWebDriver driver, string baseURL) 
-            : base(driver)
+        public NavigationHelper(ApplicationManager manager, string baseURL) 
+            : base(manager)
         {
             this.baseURL = baseURL;
         }
 
         public void GoToHomePage()
         {
-            driver.Navigate().GoToUrl(baseURL);
+            driver.Navigate().GoToUrl(baseURL + "/addressbook/group.php");
         }
 
         public void GoToGroupsPage()

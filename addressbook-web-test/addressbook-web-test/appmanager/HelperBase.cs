@@ -6,16 +6,18 @@ using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
+using WebAddressbookTests;
 
 namespace addressbook_web_test.appmanager
 {
     public class HelperBase
     {
         protected IWebDriver driver;
+        protected ApplicationManager manager;
 
-        public HelperBase(IWebDriver driver) {  
-            this.driver = driver; 
+        public HelperBase(ApplicationManager manager) {  
+            this.manager = manager;
+            this.driver = manager.Driver; 
         }
-
     }
 }

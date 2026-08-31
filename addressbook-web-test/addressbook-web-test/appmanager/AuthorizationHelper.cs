@@ -10,10 +10,10 @@ using WebAddressbookTests;
 
 namespace addressbook_web_test.appmanager
 {
-    public class LoginLogoutHelper : HelperBase
+    public class AuthorizationHelper : HelperBase
     {
-        public LoginLogoutHelper(IWebDriver driver) 
-            : base (driver)
+        public AuthorizationHelper(ApplicationManager manager)
+            : base(manager)
         {
         }
 
