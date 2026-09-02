@@ -12,18 +12,17 @@ namespace WebAddressbookTests //пространство имен
             [Test] //метка, выполнение теста
             public void TheGroupCreationTests()
             {
-                GoToHomePage();
-                GoToHomePage();
-                Login(new AccountData("admin", "secret"));
-                GoToGroupsPage();
-                InitNewGroupCreation();
+                app.Navigator.GoToHomePage();
+                app.Auth.Login(new AccountData("admin", "secret"));
+                app.Navigator.GoToGroupsPage();
+                app.Groups.InitNewGroupCreation();
                 GroupData group = new GroupData("aaa");
                 group.Header = "wegwg";
                 group.Footer = "wrwer";
-                FillGroupForm(group);
-                SubmitGroupCreation();
-                ReturnToGroupsPage();
-                Logout();
+                app.Groups.FillGroupForm(group);
+                app.Groups.SubmitGroupCreation();
+                app.Groups.ReturnToGroupsPage();
+                app.Auth.Logout();
             }
         }
     }

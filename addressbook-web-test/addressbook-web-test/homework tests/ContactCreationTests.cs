@@ -12,15 +12,15 @@ namespace WebAddressbookTests //пространство имен
         [Test] //метка, выполнение теста
         public void ContactCreationTest()
         {
-            GoToHomePage();
-            Login(new AccountData("admin", "secret"));
-            InitNewContactCreation();
+            app.Navigator.GoToHomePage();
+            app.Auth.Login(new AccountData("admin", "secret"));
+            app.Contacts.InitNewContactCreation();
             ContactData contact = new ContactData("alex");
             contact.LastName = "chernenkov";
-            FillContactForm(contact);
-            SubmitContactCreation();
-            ReturnToHomePage();
-            Logout();
+            app.Contacts.FillContactForm(contact);
+            app.Contacts.SubmitContactCreation();
+            app.Contacts.ReturnToHomePage();
+            app.Auth.Logout();
         }
     }
 }
