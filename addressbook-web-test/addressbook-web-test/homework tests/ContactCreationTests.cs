@@ -6,8 +6,9 @@ using NUnit.Framework;
 
 namespace WebAddressbookTests //пространство имен
 {
+    [NonParallelizable]
     [TestFixture] //метка
-    public class ContactCreationTests : TestBase
+    public class ContactCreationTests : AuthTestBase
     {        
         [Test] //метка, выполнение теста
         public void ContactCreationTest()
@@ -16,7 +17,6 @@ namespace WebAddressbookTests //пространство имен
             contact.LastName = "chernenkov";
 
             app.Contacts.Create(contact);
-            app.Auth.Logout();
         }
 
         [Test] //метка, выполнение теста
@@ -26,7 +26,6 @@ namespace WebAddressbookTests //пространство имен
             contact.LastName = "";
 
             app.Contacts.Create(contact);
-            app.Auth.Logout();
         }
     }
 }

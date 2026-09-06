@@ -10,19 +10,21 @@ namespace WebAddressbookTests
     {
         protected ApplicationManager app;
 
-        [SetUp]
-        public void SetupTest()
+        [OneTimeSetUp]  // Выполняется ОДИН раз перед ВСЕМИ тестами в классе
+        public void InitApplication()
         {
             app = new ApplicationManager();
-
             app.Navigator.GoToHomePage();
-            app.Auth.Login(new AccountData("admin", "secret"));
         }
 
-        [TearDown]
-        public void TeardownTest()
+        [OneTimeTearDown]  // Выполняется ОДИН раз после ВСЕХ тестов в классе
+        public void Cleanup()
         {
-            app.Stop();
+            if (app != null)
+            {
+                app.Stop();
+                app = null;
+            }
         }
     }
 }

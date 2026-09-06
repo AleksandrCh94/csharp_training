@@ -25,18 +25,18 @@ namespace WebAddressbookTests
             return this;
         }
 
-        public ContactHelper Modify(ContactData newData)
+        public ContactHelper Modify(int index,ContactData newData)
         {
-            InitModifyCreation();
+            InitModifyCreation(index);
             FillContactForm(newData);
             SubmitContactModification();
             ReturnToHomePage();
             return this;
         }
 
-        public ContactHelper Remove(int p)
+        public ContactHelper Remove(int index)
         {
-            SelectContact(p);
+            SelectContact(index);
             RemoveContact();
             ReturnToHomePage();
             return this;
@@ -48,18 +48,42 @@ namespace WebAddressbookTests
             return this;
         }
 
-        public ContactHelper InitModifyCreation()
+        public ContactHelper SelectContact(int index)
         {
-            driver.FindElement(By.XPath("//img[@alt='Edit']")).Click();
+            if (!IsElementPresent(By.XPath
+                ($"//table[@id='maintable']/tbody/tr[{++index}]/td/input")))
+            {
+                ContactData contact = new ContactData("alex");
+                contact.LastName = "chernenkov";
+
+                Create(contact);
+            }
+
+            driver.FindElement(By.XPath
+                ($"//table[@id='maintable']/tbody/tr[{++index}]/td/input")).Click();
+            return this;
+        }
+
+        public ContactHelper InitModifyCreation(int index)
+        {
+            if (!IsElementPresent(By.XPath
+                ($"//table[@id='maintable']/tbody/tr[{++index}]/td[8]/a/img")))
+            {
+                ContactData contact = new ContactData("alex");
+                contact.LastName = "chernenkov";
+
+                Create(contact);
+            }
+
+            driver.FindElement(By.XPath
+                ($"//table[@id='maintable']/tbody/tr[{++index}]/td[8]/a/img")).Click();
             return this;
         }
 
         public ContactHelper FillContactForm(ContactData contact)
         {
-            driver.FindElement(By.Name("firstname")).Clear();
-            driver.FindElement(By.Name("firstname")).SendKeys(contact.FirstName);
-            driver.FindElement(By.Name("lastname")).Clear();
-            driver.FindElement(By.Name("lastname")).SendKeys(contact.LastName);
+            Type(By.Name("firstname"), contact.FirstName);
+            Type(By.Name("lastname"), contact.LastName);
             return this;
         }
 
@@ -72,12 +96,6 @@ namespace WebAddressbookTests
         public ContactHelper SubmitContactModification()
         {
             driver.FindElement(By.XPath("//input[20]")).Click();
-            return this;
-        }
-
-        public ContactHelper SelectContact(int index)
-        {
-            driver.FindElement(By.XPath("//td/input")).Click();
             return this;
         }
 

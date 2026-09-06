@@ -6,18 +6,18 @@ using NUnit.Framework;
 
 namespace WebAddressbookTests //пространство имен
 {
+    [NonParallelizable]
     [TestFixture] //метка
-    public class GroupModificationTests : TestBase // наследование
+    public class GroupModificationTests : AuthTestBase // наследование
     {
         [Test] //метка, выполнение теста
         public void GroupModificationTest()
         {
             GroupData newData = new GroupData("qwe");
-            newData.Header = "qwe";
+            newData.Header = null;
             newData.Footer = "qwe";
 
             app.Groups.Modify(1, newData);
-            app.Auth.Logout();
         }
     }
 }

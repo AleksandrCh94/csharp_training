@@ -1,34 +1,42 @@
-﻿using System;
+﻿using System;                               // Подключение базовых системных типов (Exception, String и т.д.)
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using NUnit.Framework;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Support.UI;
+using OpenQA.Selenium;                      // Подключение библиотеки Selenium для работы с браузером
+using OpenQA.Selenium.Chrome;               // Подключение драйвера Chrome
+using OpenQA.Selenium.Support.UI;           // Подключение вспомогательных классов Selenium WebDriver
 
-namespace WebAddressbookTests
+namespace WebAddressbookTests               // Пространство имен для тестов адресной книги
 {
-    public class ApplicationManager
+    public class ApplicationManager         // Главный класс-менеджер приложения
     {
-        protected IWebDriver driver;
-        protected string baseURL;
+        // Защищенные поля (доступны только классу и наследникам)
 
-        protected LoginHelper loginHelper;
-        protected NavigationHelper navigationHelper;
-        protected GroupHelper groupHelper;
-        protected ContactHelper contactHelper;
+        protected IWebDriver driver;                    // WebDriver для управления браузером (Chrome)
+        protected string baseURL;                       // Базовый URL тестируемого приложения
 
+        // Хелперы для различных действий
+
+        protected LoginHelper loginHelper;              
+        protected NavigationHelper navigationHelper;    
+        protected GroupHelper groupHelper;              
+        protected ContactHelper contactHelper;          
+     
         public ApplicationManager()
         {
-            driver = new ChromeDriver();
-            baseURL = "http://localhost";
+            driver = new ChromeDriver();                // Создаем новый экземпляр ChromeDriver
+            baseURL = "http://localhost";               // Устанавливаем базовый URL
 
-            loginHelper = new LoginHelper(this);
-            navigationHelper = new NavigationHelper(this, baseURL);
-            groupHelper = new GroupHelper(this);
-            contactHelper = new ContactHelper(this);
+            // Инициализируем все хелперы, передавая им ссылку на текущий менеджер
+
+            loginHelper = new LoginHelper(this);                        
+            navigationHelper = new NavigationHelper(this, baseURL);     
+            groupHelper = new GroupHelper(this);                        
+            contactHelper = new ContactHelper(this);                    
         }
+
+        // Публичный метод для остановки браузера
 
         public void Stop()
         {
@@ -42,44 +50,39 @@ namespace WebAddressbookTests
             }
         }
 
+        // Свойство для доступа к помощнику авторизации (сокращение: app.Auth)
+
         public LoginHelper Auth
         {
-            get
-            {
-                return loginHelper;
-            }
+            get { return loginHelper; }                 // Возвращаем экземпляр LoginHelper
         }
+
+        // Свойство для доступа к помощнику навигации (сокращение: app.Navigator)
 
         public NavigationHelper Navigator
         {
-            get
-            {
-                return navigationHelper;
-            }
+            get { return navigationHelper; }            // Возвращаем экземпляр NavigationHelper
         }
+
+        // Свойство для доступа к помощнику групп (сокращение: app.Groups)
 
         public GroupHelper Groups
         {
-            get
-            {
-                return groupHelper;
-            }
+            get { return groupHelper; }                 // Возвращаем экземпляр GroupHelper
         }
+
+        // Свойство для доступа к помощнику контактов (сокращение: app.Contacts)
 
         public ContactHelper Contacts
         {
-            get
-            {
-                return contactHelper;
-            }
+            get { return contactHelper; }               // Возвращаем экземпляр ContactHelper
         }
 
-        public IWebDriver Driver 
+        // Свойство для прямого доступа к WebDriver (для случаев, когда нужен сам driver)
+
+        public IWebDriver Driver
         {
-            get 
-            {  
-                return driver; 
-            }
-        }
+            get { return driver; }                      // Возвращаем экземпляр IWebDriver
+        }        
     }
 }

@@ -52,6 +52,21 @@ namespace WebAddressbookTests
             return this;
         }
 
+        public GroupHelper SelectGroup(int index)
+        {
+            if (!IsElementPresent(By.XPath("//span[" + index + "]/input")))
+            {
+                GroupData group = new GroupData("aaa");
+                group.Header = "wegwg";
+                group.Footer = "wrwer";
+
+                Create(group);
+            }
+            
+            driver.FindElement(By.XPath("//span[" + index + "]/input")).Click();
+            return this;
+        }
+
         public GroupHelper InitGroupModification()
         {
             driver.FindElement(By.Name("edit")).Click();
@@ -60,12 +75,9 @@ namespace WebAddressbookTests
 
         public GroupHelper FillGroupForm(GroupData group)
         {
-            driver.FindElement(By.Name("group_name")).Clear();
-            driver.FindElement(By.Name("group_name")).SendKeys(group.Name);
-            driver.FindElement(By.Name("group_header")).Clear();
-            driver.FindElement(By.Name("group_header")).SendKeys(group.Header);
-            driver.FindElement(By.Name("group_footer")).Clear();
-            driver.FindElement(By.Name("group_footer")).SendKeys(group.Footer);
+            Type(By.Name("group_name"), group.Name);
+            Type(By.Name("group_header"), group.Header);
+            Type(By.Name("group_footer"), group.Footer);
             return this;
         }
 
@@ -78,12 +90,6 @@ namespace WebAddressbookTests
         public GroupHelper SubmitGroupModification()
         {
             driver.FindElement(By.Name("update")).Click();
-            return this;
-        }
-
-        public GroupHelper SelectGroup(int index)
-        {
-            driver.FindElement(By.XPath("//span[" + index + "]/input")).Click();
             return this;
         }
 

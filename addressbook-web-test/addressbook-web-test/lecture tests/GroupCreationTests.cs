@@ -6,8 +6,9 @@ using NUnit.Framework;
 
 namespace WebAddressbookTests //пространство имен
 {
+    [NonParallelizable]
     [TestFixture] //метка
-    public class GroupCreationTests : TestBase // наследование
+    public class GroupCreationTests : AuthTestBase // наследование
     {
         [Test] //метка, выполнение теста
         public void GroupCreationTest()
@@ -17,7 +18,6 @@ namespace WebAddressbookTests //пространство имен
             group.Footer = "wrwer";
 
             app.Groups.Create(group);
-            app.Auth.Logout();
         }
 
         [Test] //метка, выполнение теста
@@ -28,7 +28,6 @@ namespace WebAddressbookTests //пространство имен
             group.Footer = "";
 
             app.Groups.Create(group);
-            app.Auth.Logout();
         }
     }
 }

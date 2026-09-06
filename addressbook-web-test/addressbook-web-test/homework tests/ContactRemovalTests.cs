@@ -6,14 +6,14 @@ using NUnit.Framework;
 
 namespace WebAddressbookTests //пространство имен
 {
+    [NonParallelizable]
     [TestFixture] //метка
-    public class ContactRemovalTests : TestBase
+    public class ContactRemovalTests : AuthTestBase
     {
         [Test] //метка, выполнение теста
         public void ContactRemovalTest()
         {
             app.Contacts.Remove(1);
-            app.Auth.Logout();
         }
     }
 }

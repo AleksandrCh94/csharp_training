@@ -6,17 +6,17 @@ using NUnit.Framework;
 
 namespace WebAddressbookTests //пространство имен
 {
+    [NonParallelizable]
     [TestFixture] //метка
-    public class ContactModificationTests : TestBase
+    public class ContactModificationTests : AuthTestBase
     {
         [Test] //метка, выполнение теста
         public void ContactModificationTest()
         {
             ContactData newData = new ContactData("viktor");
-            newData.LastName = "barinov";
+            newData.LastName = null;
 
-            app.Contacts.Modify(newData);
-            app.Auth.Logout();
+            app.Contacts.Modify(1, newData);
         }
     }
 }
