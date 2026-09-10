@@ -1,30 +1,16 @@
-﻿using NUnit.Framework;
-using System;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
+﻿using NUnit.Framework;                                  // Подключение библиотеки NUnit для использования тестовых атрибутов
 
-namespace WebAddressbookTests
+namespace WebAddressbookTests                           // Пространство имен проекта
 {
-    public class TestBase
-    {
-        protected ApplicationManager app;
+    public class TestBase                               // Главный базовый класс, от которого наследуются все тестовые классы
+    {                               
+        protected ApplicationManager app;               // Защищенная переменная, видимая в наследниках, для работы с менеджером сайта
 
-        [OneTimeSetUp]  // Выполняется ОДИН раз перед ВСЕМИ тестами в классе
-        public void InitApplication()
-        {
-            app = new ApplicationManager();
-            app.Navigator.GoToHomePage();
-        }
-
-        [OneTimeTearDown]  // Выполняется ОДИН раз после ВСЕХ тестов в классе
-        public void Cleanup()
-        {
-            if (app != null)
-            {
-                app.Stop();
-                app = null;
-            }
-        }
-    }
+        [SetUp]                                         // Атрибут NUnit: этот метод автоматически вызывается ПЕРЕД каждым тест-кейсом
+        public void InitApplication()                   // Метод подготовки окружения для очередного теста
+        {                           
+            app = ApplicationManager.GetInstance();     // Запрашиваем у Singleton живой экземпляр менеджера (окно откроется, если это первый тест)
+            app.Navigator.GoToHomePage();               // Команда хелперу навигации загрузить главную страницу сайта перед началом теста
+        }                           
+    }                               
 }

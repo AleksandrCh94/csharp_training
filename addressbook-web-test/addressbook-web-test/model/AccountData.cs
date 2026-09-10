@@ -1,41 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;                                                   // Подключение базового пространства имен .NET
+using System.Collections.Generic;                               // Подключение поддержки работы с коллекциями (списки, словари)
+using System.Text;                                              // Подключение классов для работы с кодировками и строками
 
-namespace WebAddressbookTests
+namespace WebAddressbookTests                                   // Пространство имен, объединяющее все файлы проекта
 {
-    public class AccountData
+    public class AccountData                                    // Класс-модель для хранения учетных данных пользователя (логин/пароль)
     {
-        private string username;
-        private string password;
+        private string username;                                // Приватное поле для скрытого хранения имени пользователя (логина)
+        private string password;                                // Приватное поле для скрытого хранения пароля
 
-        public AccountData(string username, string password) // конструктор
+        public AccountData(string username, string password)    // Конструктор класса, принимающий два текстовых параметра
         {
-            this.username = username;
-            this.password = password;
+            this.username = username;                           // Записываем значение аргумента username в приватное поле username
+            this.password = password;                           // Записываем значение аргумента password в приватное поле password
         }
 
-        public string Username // свойство
+        public string Username                                  // Публичное свойство для безопасного доступа к приватному полю username
         {
-            get
+            get                                                 // Блок чтения (вызывается, когда мы берем значение из свойства)
             {
-                return username;
+                return username;                                // Возвращаем значение, скрытое в приватном поле username
             }
-            set
+            set                                                 // Блок записи (вызывается, когда мы присваиваем значение свойству)
             {
-                username = value;
+                username = value;                               // Записываем переданное значение (value) в приватное поле username
             }
         }
 
-        public string Password // свойство
+        public string Password                                  // Публичное свойство для безопасного доступа к приватному полю password
         {
-            get
+            get                                                 // Блок чтения (вызывается при чтении пароля)
             {
-                return password;
+                return password;                                // Возвращаем значение, скрытое в приватном поле password
             }
-            set
+            set                                                 // Блок записи (вызывается при изменении пароля)
             {
-                password = value;
+                password = value;                               // Записываем переданное значение (value) в приватное поле password
             }
         }
     }

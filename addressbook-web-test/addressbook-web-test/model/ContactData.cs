@@ -1,38 +1,40 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;                                   // Подключение базовых системных типов C#
+using System.Collections.Generic;               // Подключение инструментов для работы со списками
+using System.Text;                              // Подключение инструментов для работы с текстом
 
-namespace WebAddressbookTests
+namespace WebAddressbookTests                   // Пространство имен проекта адресной книги
 {
-    public class ContactData
+    public class ContactData                    // Класс-модель, представляющий структуру данных одного контакта на сайте
     {
-        private string firstname;
-        private string lastname = "";
+        private string firstname;               // Приватное поле для хранения имени контакта
+        private string lastname = "";           // Приватное поле для хранения фамилии (по умолчанию пустая строка)
 
-        public ContactData(string firstname) // конструктор
+        public ContactData(string firstname)    // Конструктор класса, требующий обязательное указание имени контакта
         {
-            this.firstname = firstname;
+            this.firstname = firstname;         // Сохраняем переданное в конструктор имя в приватное поле firstname
         }
 
-        public string FirstName { // свойство
-            get
+        public string FirstName                 // Публичное свойство для чтения и изменения приватного поля firstname
+        {                                       
+            get                                 // Блок чтения свойства
             {
-                return firstname;
+                return firstname;               // Возвращаем значение из приватного поля firstname
             }
-            set
+            set                                 // Блок записи нового значения свойства
             {
-                firstname = value;
+                firstname = value;              // Обновляем значение приватного поля firstname
             }
         }
 
-        public string LastName { // свойство
-            get
+        public string LastName                  // Публичное свойство для чтения и изменения приватного поля lastname
+        {                                       
+            get                                 // Блок чтения свойства
             {
-                return lastname;
+                return lastname;                // Возвращаем значение из приватного поля lastname
             }
-            set
+            set                                 // Блок записи нового значения свойства
             {
-                lastname = value;
+                lastname = value;               // Обновляем значение приватного поля lastname
             }
         }
     }

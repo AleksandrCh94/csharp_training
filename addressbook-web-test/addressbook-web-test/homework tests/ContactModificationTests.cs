@@ -1,22 +1,22 @@
-﻿using System;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using NUnit.Framework;
+﻿using System;                               // Подключение базовых типов и системных функций .NET
+using System.Text;                          // Подключение поддержки обработки текстовых строк и кодировок
+using System.Text.RegularExpressions;       // Подключение инструментов для работы с регулярными выражениями
+using System.Threading;                     // Подключение инструментов для управления задержками и потоками
+using NUnit.Framework;                      // Подключение тестового фреймворка NUnit
 
-namespace WebAddressbookTests //пространство имен
+namespace WebAddressbookTests                               // Пространство имен проекта для логической организации кода
 {
-    [NonParallelizable]
-    [TestFixture] //метка
-    public class ContactModificationTests : AuthTestBase
+    [NonParallelizable]                                     // Атрибут NUnit: запускает тесты этого класса строго в один поток (последовательно)
+    [TestFixture]                                           // Атрибут NUnit: регистрирует этот класс в Обозревателе тестов как тестовый набор
+    public class ContactModificationTests : AuthTestBase    // Объявление класса тестов модификации контактов, наследующего авторизацию из AuthTestBase
     {
-        [Test] //метка, выполнение теста
-        public void ContactModificationTest()
+        [Test]                                                  // Атрибут NUnit: помечает метод как запускаемый автоматический тест-кейс
+        public void ContactModificationTest()                   // Тест-кейс: проверка редактирования параметров существующего контакта
         {
-            ContactData newData = new ContactData("viktor");
-            newData.LastName = null;
+            ContactData newData = new ContactData("viktor");    // Создаем новый объект данных контакта и сразу задаем ему измененное имя "viktor"
+            newData.LastName = null;                            // Указываем, что фамилию контакта при модификации менять не нужно (оставляем без изменений)
 
-            app.Contacts.Modify(1, newData);
+            app.Contacts.Modify(1, newData);                    // Вызываем хелпер контактов и передаем команду изменить первый контакт (индекс 1), применив новые данные
         }
     }
 }

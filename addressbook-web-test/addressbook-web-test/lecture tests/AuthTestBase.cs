@@ -1,23 +1,19 @@
-﻿using NUnit.Framework;
-using System;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
+﻿using NUnit.Framework;                                          // Подключение тестового фреймворка NUnit
 
-namespace WebAddressbookTests
+namespace WebAddressbookTests                                   // Пространство имен проекта
 {
-    public class AuthTestBase : TestBase
-    {
-        [SetUp]
-        public void SetupLogin()
-        {
-            app.Auth.Login(new AccountData("admin", "secret"));
-        }
+    public class AuthTestBase : TestBase                        // Специализированный базовый класс для тестов, требующих предварительного входа в систему
+    {                                                           
+        [SetUp]                                                 // Атрибут NUnit: этот метод выполнится ПЕРЕД каждым тестом в классах-наследниках (после InitApplication)
+        public void SetupLogin()                                // Метод для автоматического входа на сайт перед тестом
+        {                           
+            app.Auth.Login(new AccountData("admin", "secret")); // Обращаемся к хелперу авторизации и логинимся с фиксированными данными администратора
+        }                           
 
-        [TearDown]
-        public void TeardownLogout()
-        {
-            app.Auth.Logout();
-        }
-    }
+        [TearDown]                                              // Атрибут NUnit: этот метод автоматически вызывается ПОСЛЕ каждого тест-кейса
+        public void TeardownLogout()                            // Метод для выхода из системы после завершения шагов теста
+        {                           
+            app.Auth.Logout();                                  // Обращаемся к хелперу авторизации и нажимаем кнопку выхода из профиля (Logout)
+        }                           
+    }                               
 }

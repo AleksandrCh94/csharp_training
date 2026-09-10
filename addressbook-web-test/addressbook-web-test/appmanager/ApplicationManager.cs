@@ -1,88 +1,93 @@
-﻿using System;                               // Подключение базовых системных типов (Exception, String и т.д.)
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using NUnit.Framework;
-using OpenQA.Selenium;                      // Подключение библиотеки Selenium для работы с браузером
-using OpenQA.Selenium.Chrome;               // Подключение драйвера Chrome
-using OpenQA.Selenium.Support.UI;           // Подключение вспомогательных классов Selenium WebDriver
+﻿using System;                               // Подключение базовых системных типов (.NET)
+using OpenQA.Selenium;                      // Подключение интерфейсов Selenium WebDriver
+using OpenQA.Selenium.Chrome;               // Подключение драйвера для управления браузером Chrome
 
-namespace WebAddressbookTests               // Пространство имен для тестов адресной книги
+namespace WebAddressbookTests               // Пространство имен проекта
 {
-    public class ApplicationManager         // Главный класс-менеджер приложения
+    public class ApplicationManager         // Главный класс-управленец для всей инфраструктуры тестов
     {
-        // Защищенные поля (доступны только классу и наследникам)
+        private readonly IWebDriver driver;                         // Приватное поле для хранения экземпляра драйвера браузера
+        private readonly string baseURL;                            // Приватное поле для хранения базового веб-адреса (URL) приложения
 
-        protected IWebDriver driver;                    // WebDriver для управления браузером (Chrome)
-        protected string baseURL;                       // Базовый URL тестируемого приложения
+        private readonly LoginHelper loginHelper;                   // Приватное поле для хранения помощника по авторизации
+        private readonly NavigationHelper navigationHelper;         // Приватное поле для хранения помощника по навигации
+        private readonly GroupHelper groupHelper;                   // Приватное поле для хранения помощника по работе с группами
+        private readonly ContactHelper contactHelper;               // Приватное поле для хранения помощника по работе с контактами
 
-        // Хелперы для различных действий
+        private static ApplicationManager instance;                 // Статическое поле, хранящее единственный экземпляр этого класса во всей программе
 
-        protected LoginHelper loginHelper;              
-        protected NavigationHelper navigationHelper;    
-        protected GroupHelper groupHelper;              
-        protected ContactHelper contactHelper;          
-     
-        public ApplicationManager()
-        {
-            driver = new ChromeDriver();                // Создаем новый экземпляр ChromeDriver
-            baseURL = "http://localhost";               // Устанавливаем базовый URL
+        private ApplicationManager()                                // Приватный конструктор (запрещает создание через 'new' снаружи класса)
+        {                                                     
+            driver = new ChromeDriver();                            // Физический запуск и инициализация процесса браузера Google Chrome
+            baseURL = "http://localhost";                           // Запись базового адреса тестируемого сайта в переменную
 
-            // Инициализируем все хелперы, передавая им ссылку на текущий менеджер
+            loginHelper = new LoginHelper(this);                    // Создание хелпера логина и передача ему ссылки на этот менеджер
+            navigationHelper = new NavigationHelper(this, baseURL); // Создание хелпера навигации с передачей менеджера и базового URL
+            groupHelper = new GroupHelper(this);                    // Создание хелпера групп и передача ему ссылки на этот менеджер
+            contactHelper = new ContactHelper(this);                // Создание хелпера контактов и передача ему ссылки на этот менеджер
 
-            loginHelper = new LoginHelper(this);                        
-            navigationHelper = new NavigationHelper(this, baseURL);     
-            groupHelper = new GroupHelper(this);                        
-            contactHelper = new ContactHelper(this);                    
-        }
+            AppDomain.CurrentDomain.ProcessExit += new EventHandler(OnProcessExit);     // Подписка метода OnProcessExit на событие закрытия приложения операционной системой
+        }                                                     
 
-        // Публичный метод для остановки браузера
+        public static ApplicationManager GetInstance()              // Статический метод доступа к единственному экземпляру (Singleton)
+        {                                                     
+            if (instance == null)                                   // Проверка: если менеджер еще ни разу не создавался
+            {                                                 
+                instance = new ApplicationManager();                // Вызываем приватный конструктор и создаем единственный объект менеджера
+            }                                                 
+            return instance;                                        // Возвращаем существующий или только что созданный объект менеджера
+        }                                                     
 
-        public void Stop()
-        {
-            try
-            {
-                driver.Quit();
-            }
-            catch (Exception)
-            {
-                // Ignore errors if unable to close the browser
-            }
-        }
+        private static void OnProcessExit(object sender, EventArgs e)   // Статический обработчик системного события завершения тестов
+        {                                                               
+            if (instance != null)                                       // Проверка: если менеджер существует и браузер запущен
+            {                                                 
+                instance.Stop();                                        // Вызываем метод безопасной остановки браузера
+            }                                                 
+        }                                                     
 
-        // Свойство для доступа к помощнику авторизации (сокращение: app.Auth)
+        public void Stop()                                              // Публичный метод для принудительного или планового закрытия браузера
+        {                                                     
+            try                                                         // Начало блока отлова возможных исключений (ошибок)
+            {                                                 
+                if (driver != null)                                     // Классическая проверка: если драйвер браузера существует
+                {                                             
+                    driver.Quit();                                      // Команда Selenium на закрытие всех окон и уничтожение процесса Chrome
+                }                                             
+            }                                                 
+            catch (Exception)                                           // Блок перехвата любых ошибок, если браузер закрылся аварийно раньше времени
+            {                                                 
+                // Ignore errors if unable to close the browser         // Комментарий-заглушка: нам не важно, почему закрытие вызвало ошибку
+            }                                                 
+            finally                                                     // Блок, который выполнится гарантированно в любом случае
+            {                                                 
+                instance = null;                                        // Обнуляем статическую ссылку, чтобы очистить память для будущих запусков
+            }                                                 
+        }                                                     
 
-        public LoginHelper Auth
-        {
-            get { return loginHelper; }                 // Возвращаем экземпляр LoginHelper
-        }
+        public LoginHelper Auth                               // Свойство для получения помощника авторизации снаружи
+        {                                                     
+            get { return loginHelper; }                       // Возвращает скрытое приватное поле _loginHelper
+        }                                                     
 
-        // Свойство для доступа к помощнику навигации (сокращение: app.Navigator)
+        public NavigationHelper Navigator                     // Свойство для получения помощника навигации снаружи
+        {                                                     
+            get { return navigationHelper; }                  // Возвращает скрытое приватное поле _navigationHelper
+        }                                                     
 
-        public NavigationHelper Navigator
-        {
-            get { return navigationHelper; }            // Возвращаем экземпляр NavigationHelper
-        }
+        public GroupHelper Groups                             // Свойство для получения помощника групп снаружи
+        {                                                     
+            get { return groupHelper; }                       // Возвращает скрытое приватное поле _groupHelper
+        }                                                     
 
-        // Свойство для доступа к помощнику групп (сокращение: app.Groups)
+        public ContactHelper Contacts                         // Свойство для получения помощника контактов снаружи
+        {                                                     
+            get { return contactHelper; }                     // Возвращает скрытое приватное поле _contactHelper
+        }                                                     
 
-        public GroupHelper Groups
-        {
-            get { return groupHelper; }                 // Возвращаем экземпляр GroupHelper
-        }
-
-        // Свойство для доступа к помощнику контактов (сокращение: app.Contacts)
-
-        public ContactHelper Contacts
-        {
-            get { return contactHelper; }               // Возвращаем экземпляр ContactHelper
-        }
-
-        // Свойство для прямого доступа к WebDriver (для случаев, когда нужен сам driver)
-
-        public IWebDriver Driver
-        {
-            get { return driver; }                      // Возвращаем экземпляр IWebDriver
-        }        
+        public IWebDriver Driver                              // Свойство для прямого доступа к самому драйверу Selenium
+        {                                                     
+            get { return driver; }                            // Возвращает скрытое приватное поле _driver
+        }                                                     
     }
 }

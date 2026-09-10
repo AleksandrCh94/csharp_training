@@ -1,19 +1,19 @@
-﻿using System;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using NUnit.Framework;
+﻿using System;                               // Подключение базового пространства имен .NET
+using System.Text;                          // Подключение инструментов для кодирования и сборки текста
+using System.Text.RegularExpressions;       // Подключение поддержки работы с регулярными выражениями
+using System.Threading;                     // Подключение библиотеки для управления потоками и ожиданиями
+using NUnit.Framework;                      // Подключение библиотек тестового фреймворка NUnit
 
-namespace WebAddressbookTests
+namespace WebAddressbookTests                       // Пространство имен, объединяющее тесты проекта
 {
-    [NonParallelizable]
-    [TestFixture]
-    public class GroupRemovalTests : AuthTestBase // наследование 
+    [NonParallelizable]                             // Атрибут NUnit: указывает запускать тесты этого класса строго последовательно
+    [TestFixture]                                   // Атрибут NUnit: помечает класс как набор автоматических тестов
+    public class GroupRemovalTests : AuthTestBase   // Объявление тестового класса, наследующего автоматический логин из AuthTestBase
     {
-        [Test]
-        public void GroupRemovalTest()
+        [Test]                                      // Атрибут NUnit: помечает метод как отдельный выполняемый тест-кейс
+        public void GroupRemovalTest()              // Тест-кейс: проверка удаления существующей группы
         {
-            app.Groups.Remove(1);
+            app.Groups.Remove(1);                   // Вызываем метод хелпера групп для удаления первой группы в списке (по порядковому индексу 1)
         }
     }
 }

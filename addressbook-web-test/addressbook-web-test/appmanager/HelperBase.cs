@@ -1,44 +1,44 @@
-﻿using System;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using NUnit.Framework;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Support.UI;
+﻿using System;                               // Подключение базовых типов и системных функций .NET
+using System.Text;                          // Подключение поддержки работы с кодировками и текстовыми строками
+using System.Text.RegularExpressions;       // Подключение инструментов для работы с регулярными выражениями
+using System.Threading;                     // Подключение инструментов управления задержками и потоками
+using NUnit.Framework;                      // Подключение библиотек тестового фреймворка NUnit
+using OpenQA.Selenium;                      // Подключение основных интерфейсов библиотеки Selenium WebDriver
+using OpenQA.Selenium.Chrome;               // Подключение компонентов драйвера браузера Chrome
+using OpenQA.Selenium.Support.UI;           // Подключение вспомогательных классов Selenium (ожидания и т.д.)
 
-namespace WebAddressbookTests
+namespace WebAddressbookTests                           // Пространство имен проекта для логического объединения кода
 {
-    public class HelperBase
+    public class HelperBase                             // Объявление базового класса, содержащего низкоуровневые методы Selenium для всех остальных хелперов
     {
-        protected IWebDriver driver;
-        protected ApplicationManager manager;
+        protected IWebDriver driver;                    // Защищенное поле для доступа к драйверу браузера в текущем хелпере и его наследниках
+        protected ApplicationManager manager;           // Защищенное поле для доступа к главному менеджеру приложения из хелперов-наследников
 
-        public HelperBase(ApplicationManager manager)
+        public HelperBase(ApplicationManager manager)   // Конструктор базового класса, принимающий ссылку на менеджер приложения
         {
-            this.manager = manager;
-            driver = manager.Driver;
+            this.manager = manager;                     // Сохраняем ссылку на менеджер во внутреннее поле текущего объекта
+            driver = manager.Driver;                    // Извлекаем экземпляр WebDriver из менеджера и записываем в поле driver для быстрого доступа
         }
 
-        public void Type(By locator, string text)
+        public void Type(By locator, string text)           // Вспомогательный метод для безопасного ввода текста в поля формы
         {
-            if (text != null)
+            if (text != null)                               // Проверка предусловия: если переданная строка текста не равна null (не является пустой ссылкой)
             {
-                driver.FindElement(locator).Clear();
-                driver.FindElement(locator).SendKeys(text);
+                driver.FindElement(locator).Clear();        // Находим элемент по переданному локатору и полностью очищаем его от старого текста
+                driver.FindElement(locator).SendKeys(text); // Находим этот же элемент повторно и эмулируем ввод посимвольного текста с клавиатуры
             }
         }
 
-        public bool IsElementPresent(By by)
+        public bool IsElementPresent(By by) // Вспомогательный метод быстрой проверки физического присутствия элемента на веб-странице
         {
-            try
+            try                             // Открытие блока отслеживания исключений (ошибок)
             {
-                driver.FindElement(by);
-                return true;
+                driver.FindElement(by);     // Пробуем найти элемент на текущей странице по указанному локатору
+                return true;                // Если элемент успешно найден без генерации ошибок, возвращаем истину (True)
             }
-            catch (NoSuchElementException)
+            catch (NoSuchElementException)  // Перехват специфического исключения Selenium, если элемент отсутствует в структуре DOM
             {
-                return false;
+                return false;               // Если элемент не был найден и выпало исключение, возвращаем ложь (False)
             }
         }
     }

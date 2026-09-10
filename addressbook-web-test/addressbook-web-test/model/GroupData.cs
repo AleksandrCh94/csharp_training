@@ -1,50 +1,53 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;                               // Подключение основных системных компонентов .NET
+using System.Collections.Generic;           // Подключение поддержки работы с коллекциями данных
+using System.Text;                          // Подключение поддержки обработки текстовых строк
 
-namespace WebAddressbookTests
+namespace WebAddressbookTests               // Пространство имен проекта
 {
-    public class GroupData
+    public class GroupData                  // Класс-модель, описывающий сущность "Группа контактов"
     {
-        private string name;
-        private string header = "";
-        private string footer = "";
+        private string name;                // Приватное поле для хранения названия группы
+        private string header = "";         // Приватное поле для хедера (шапки) группы
+        private string footer = "";         // Приватное поле для футера (подвала) группы
 
-        public GroupData(string name) // конструктор
+        public GroupData(string name)       // Конструктор класса, требующий название группы при её создании
         {
-            this.name = name;
+            this.name = name;               // Записываем переданное имя в приватное поле name
         }
 
-        public string Name { // свойство
-            get
+        public string Name                  // Публичное свойство для работы с полем name
+        {                                   
+            get                             // Блок считывания названия группы
             {
-                return name;
+                return name;                // Отдаем значение из приватного поля name
             }
-            set
+            set                             // Блок изменения названия группы
             {
-                name = value;
-            }
-        }
-
-        public string Header { // свойство
-            get
-            {
-                return header;
-            }
-            set
-            {
-                header = value;
+                name = value;               // Присваиваем новое значение приватному полю name
             }
         }
 
-        public string Footer { // свойство
-            get
+        public string Header                // Публичное свойство для работы с полем header
+        {                                   
+            get                             // Блок считывания текста шапки
             {
-                return footer;
+                return header;              // Отдаем значение из приватного поля header
             }
-            set
+            set                             // Блок изменения текста шапки
             {
-                footer = value;
+                header = value;             // Присваиваем новое значение приватному полю header
+            }
+        }
+
+        public string Footer                // Публичное свойство для работы с полем footer
+        {                                   
+            get                             // Блок считывания текста подвала
+            {
+                return footer;              // Отдаем значение из приватного поля footer
+            }
+            set                             // Блок изменения текста подвала
+            {
+                footer = value;             // Присваиваем новое значение приватному полю footer
             }
         }
     }

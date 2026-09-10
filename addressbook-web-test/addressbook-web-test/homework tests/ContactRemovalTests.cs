@@ -1,19 +1,19 @@
-﻿using System;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using NUnit.Framework;
+﻿using System;                               // Подключение базового пространства имен .NET
+using System.Text;                          // Подключение поддержки работы с кодировками и текстовыми строками
+using System.Text.RegularExpressions;       // Подключение классов для обработки регулярных выражений
+using System.Threading;                     // Подключение инструментов управления потоками и ожиданиями выполнения
+using NUnit.Framework;                      // Подключение тестового фреймворка NUnit для работы с тестами
 
-namespace WebAddressbookTests //пространство имен
+namespace WebAddressbookTests                       // Пространство имен проекта для логической связи всех файлов
 {
-    [NonParallelizable]
-    [TestFixture] //метка
-    public class ContactRemovalTests : AuthTestBase
+    [NonParallelizable]                             // Атрибут NUnit: указывает запускать тесты этого класса последовательно (без параллелизации)
+    [TestFixture]                                   // Атрибут NUnit: помечает класс как набор автоматических тестов
+    public class ContactRemovalTests : AuthTestBase // Объявление класса тестов удаления контактов, наследующего сессию из AuthTestBase
     {
-        [Test] //метка, выполнение теста
-        public void ContactRemovalTest()
+        [Test]                              // Атрибут NUnit: помечает метод как запускаемый автоматический тест-кейс
+        public void ContactRemovalTest()    // Тест-кейс: проверка удаления существующего контакта из адресной книги
         {
-            app.Contacts.Remove(1);
+            app.Contacts.Remove(1);         // Вызываем хелпер контактов для удаления первого контакта из списка (по порядковому индексу 1)
         }
     }
 }

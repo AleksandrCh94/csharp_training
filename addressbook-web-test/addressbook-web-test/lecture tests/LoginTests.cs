@@ -1,37 +1,39 @@
-﻿using System;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using NUnit.Framework;
+﻿using System;                               // Подключение базовых системных типов .NET
+using System.Text;                          // Подключение классов для работы с текстом и кодировками
+using System.Text.RegularExpressions;       // Подключение поддержки регулярных выражений
+using System.Threading;                     // Подключение инструментов управления потоками выполнения
+using NUnit.Framework;                      // Подключение тестового фреймворка NUnit для работы с тестами и проверками
 
-namespace WebAddressbookTests //пространство имен
+namespace WebAddressbookTests               // Пространство имен, объединяющее тесты проекта
 {
-    [NonParallelizable]
-    [TestFixture] //метка тестового класса
-    public class LoginTests : TestBase
+    [NonParallelizable]                     // Атрибут NUnit: запрещает выполнять тесты этого класса параллельно с другими тестами
+    [TestFixture]                           // Атрибут NUnit: указывает фреймворку, что данный класс содержит автоматические тесты
+    public class LoginTests : TestBase      // Объявление тестового класса, наследующего базовую функциональность и инициализацию из TestBase
     {
-        [Test] //метка выполнения теста
-        public void LoginWithValidCredentials()
+        [Test]                                              // Атрибут NUnit: помечает метод как отдельный тест-кейс для проверки корректного логина
+        public void LoginWithValidCredentials()             // Тест-кейс: проверка авторизации под правильной учетной записью
         {
-            app.Auth.Logout();
+            app.Auth.Logout();                              // Принудительно выходим из текущей сессии, чтобы гарантировать чистоту теста
 
-            AccountData account = new AccountData("admin", "secret");
-            app.Auth.Login(account);
+            AccountData account = 
+                new AccountData("admin", "secret");         // Создаем объект с правильным именем пользователя и паролем
+            app.Auth.Login(account);                        // Вызываем метод авторизации хелпера и передаем туда валидные данные
 
             // проверка
-            Assert.IsTrue(app.Auth.IsLoggedIn(account)); 
+            Assert.IsTrue(app.Auth.IsLoggedIn(account));    // Проверяем, что метод IsLoggedIn вернул True, подтверждая успешный вход
         }
 
-        [Test] //метка выполнения теста
-        public void LoginWithInvalidCredentials()
+        [Test]                                              // Атрибут NUnit: помечает метод как отдельный тест-кейс для проверки ошибочного логина
+        public void LoginWithInvalidCredentials()           // Тест-кейс: проверка попытки входа под неверным паролем
         {
-            app.Auth.Logout();
+            app.Auth.Logout();                              // Принудительно выходим из текущей сессии перед началом теста
 
-            AccountData account = new AccountData("admin", "1236554");
-            app.Auth.Login(account);
-
+            AccountData account = 
+                new AccountData("admin", "1236554");        // Создаем объект с правильным логином, но заведомо неверным паролем
+            app.Auth.Login(account);                        // Передаем невалидные данные в метод авторизации хелпера
+            
             // проверка
-            Assert.IsFalse(app.Auth.IsLoggedIn(account));
+            Assert.IsFalse(app.Auth.IsLoggedIn(account));   // Проверяем, что метод IsLoggedIn вернул False, подтверждая, что вход выполнен не был
         }
     }
 }

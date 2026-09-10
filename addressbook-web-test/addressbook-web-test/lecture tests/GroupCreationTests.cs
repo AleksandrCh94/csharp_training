@@ -1,33 +1,33 @@
-﻿using System;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
-using NUnit.Framework;
+﻿using System;                               // Подключение базовых типов и системных функций .NET
+using System.Text;                          // Подключение поддержки работы со строками и кодировками
+using System.Text.RegularExpressions;       // Подключение классов для обработки регулярных выражений
+using System.Threading;                     // Подключение инструментов управления потоками и паузами
+using NUnit.Framework;                      // Подключение фреймворка NUnit для выполнения тестов
 
-namespace WebAddressbookTests //пространство имен
+namespace WebAddressbookTests                       // Пространство имен для организации классов проекта
 {
-    [NonParallelizable]
-    [TestFixture] //метка
-    public class GroupCreationTests : AuthTestBase // наследование
+    [NonParallelizable]                             // Атрибут NUnit: запускает тесты этого класса последовательно (в один поток)
+    [TestFixture]                                   // Атрибут NUnit: помечает класс как содержащий наборы тестов
+    public class GroupCreationTests : AuthTestBase  // Объявление класса тестов создания групп, наследующего авторизацию из AuthTestBase
     {
-        [Test] //метка, выполнение теста
-        public void GroupCreationTest()
+        [Test]                                      // Атрибут NUnit: помечает метод как тест-кейс для проверки создания заполненной группы
+        public void GroupCreationTest()             // Тест-кейс: успешное создание группы со всеми заполненными полями
         {
-            GroupData group = new GroupData("aaa");
-            group.Header = "wegwg";
-            group.Footer = "wrwer";
+            GroupData group = new GroupData("aaa"); // Создаем объект группы и сразу задаем ей обязательное название "aaa"
+            group.Header = "wegwg";                 // Заполняем поле заголовка (шапки) группы строкой "wegwg"
+            group.Footer = "wrwer";                 // Заполняем поле подвала (футера) группы строкой "wrwer"
 
-            app.Groups.Create(group);
+            app.Groups.Create(group);               // Вызываем метод хелпера групп для физического добавления группы на сайт
         }
 
-        [Test] //метка, выполнение теста
-        public void EmptyGroupCreationTest()
+        [Test]                                      // Атрибут NUnit: помечает метод как тест-кейс для проверки создания пустой группы
+        public void EmptyGroupCreationTest()        // Тест-кейс: успешное создание группы с пустыми строками во всех полях
         {
-            GroupData group = new GroupData("");
-            group.Header = "";
-            group.Footer = "";
+            GroupData group = new GroupData("");    // Создаем объект группы с пустым текстовым значением вместо названия
+            group.Header = "";                      // Задаем пустое текстовое значение для заголовка группы
+            group.Footer = "";                      // Задаем пустое текстовое значение для подвала группы
 
-            app.Groups.Create(group);
+            app.Groups.Create(group);               // Передаем пустую модель группы в хелпер для создания на сайте
         }
     }
 }
