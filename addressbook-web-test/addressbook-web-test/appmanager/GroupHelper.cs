@@ -29,7 +29,6 @@ namespace WebAddressbookTests                           // Пространст�
         public GroupHelper Modify(int index, GroupData newData) // Высокоуровневый метод для редактирования группы по её индексу
         {
             manager.Navigator.GoToGroupsPage();                 // Переход на страницу со списком групп перед началом изменений
-            GetOrCreateGroup(index);                            // Проверка существования группы по указанному индексу и её автоматическое создание при отсутствии
             SelectGroup(index);                                 // Выбор чекбокса нужной группы в списке
             InitGroupModification();                            // Нажатие кнопки редактирования выбранной группы
             FillGroupForm(newData);                             // Перезаполнение полей формы новыми текстовыми данными
@@ -41,7 +40,6 @@ namespace WebAddressbookTests                           // Пространст�
         public GroupHelper Remove(int index)    // Высокоуровневый метод для удаления группы по её индексу
         {
             manager.Navigator.GoToGroupsPage(); // Переход на страницу со списком групп
-            GetOrCreateGroup(index);            // Гарантируем наличие группы на указанной позиции (создаем, если списка не хватает)
             SelectGroup(index);                 // Выбор чекбокса удаляемой группы
             RemoveGroup();                      // Нажатие управляющей кнопки удаления групп
             ReturnToGroupsPage();               // Возврат на страницу списка групп для обновления интерфейса
@@ -56,6 +54,7 @@ namespace WebAddressbookTests                           // Пространст�
 
         public GroupHelper GetOrCreateGroup(int index)  // Метод обеспечения предусловия: проверка наличия группы или её создание «на лету»
         {
+            manager.Navigator.GoToGroupsPage();         // Переход на страницу со списком групп
             if (!IsElementPresent(By.XPath
                 ("//span[" + index + "]/input")))       // Проверка: если на странице отсутствует чекбокс группы с указанным порядковым номером
             {

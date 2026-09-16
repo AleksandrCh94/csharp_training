@@ -27,7 +27,6 @@ namespace WebAddressbookTests                               // Простран�
 
         public ContactHelper Modify(int index, ContactData newData) // Высокоуровневый метод для редактирования контакта по его индексу в таблице
         {
-            GetOrCreateContact(index);                              // Проверка предусловия: гарантируем наличие контакта перед его модификацией
             InitModifyCreation(index);                              // Открытие формы редактирования конкретного контакта нажатием на иконку карандаша
             FillContactForm(newData);                               // Перезаполнение формы новыми переданными текстовыми данными
             SubmitContactModification();                            // Подтверждение изменений нажатием кнопки обновления данных
@@ -37,7 +36,6 @@ namespace WebAddressbookTests                               // Простран�
 
         public ContactHelper Remove(int index)  // Высокоуровневый метод для удаления контакта по его индексу в таблице
         {
-            GetOrCreateContact(index);          // Проверка предусловия: гарантируем наличие контакта перед его удалением
             SelectContact(index);               // Установка чекбокса выбора напротив нужного контакта в строке таблицы
             RemoveContact();                    // Нажатие кнопки удаления контактов на панели управления
             ReturnToHomePage();                 // Возврат на главную страницу для обновления списка
