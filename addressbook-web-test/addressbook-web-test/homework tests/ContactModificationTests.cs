@@ -13,12 +13,24 @@ namespace WebAddressbookTests                               // Простран�
         [Test]                                                  // Атрибут NUnit: помечает метод как запускаемый автоматический тест-кейс
         public void ContactModificationTest()                   // Тест-кейс: проверка редактирования параметров существующего контакта
         {
-            int a = 1;                                          // Создаем переменную, хранящую индекс n-ого контакта 
             ContactData newData = new ContactData("viktor");    // Создаем новый объект данных контакта и сразу задаем ему измененное имя "viktor"
-            newData.LastName = null;                            // Указываем, что фамилию контакта при модификации менять не нужно (оставляем без изменений)
+            newData.LastName = "doom";                            // Указываем, что фамилию контакта при модификации менять не нужно (оставляем без изменений)
 
-            app.Contacts.GetOrCreateContact(a);                 // Проверка предусловия: гарантируем наличие n-ого контакта перед его модификацией
-            app.Contacts.Modify(a, newData);                    // Вызываем хелпер контактов и передаем команду изменить n-ый контакт (индекс n), применив новые данные
+            app.Contacts.GetOrCreateContact(0);                 // Проверка предусловия: гарантируем наличие n-ого контакта перед его модификацией
+
+            List<ContactData> oldContacts = app.Contacts.GetContactsList();
+
+            app.Contacts.Modify(0, newData);                    // Вызываем хелпер контактов и передаем команду изменить n-ый контакт (индекс n), применив новые данные
+
+            List<ContactData> newContacts = app.Contacts.GetContactsList();
+
+            oldContacts[0].FirstName = newData.FirstName;
+            oldContacts[0].LastName = newData.LastName;
+            oldContacts.Sort();
+            newContacts.Sort();
+            //Console.WriteLine(string.Join("\n", oldContacts));
+            //Console.WriteLine(string.Join("\n", newContacts));
+            Assert.AreEqual(oldContacts, newContacts);
         }
     }
 }

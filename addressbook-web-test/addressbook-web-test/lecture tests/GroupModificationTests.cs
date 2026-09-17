@@ -13,13 +13,21 @@ namespace WebAddressbookTests                           // Пространст�
         [Test]                                          // Атрибут NUnit: помечает метод как запускаемый автоматический тест-кейс
         public void GroupModificationTest()             // Тест-кейс: проверка редактирования параметров существующей группы
         {
-            int n = 1;                                  // Создаем переменную, хранящую индекс n-ой группы 
             GroupData newData = new GroupData("кerh");  // Создаем новый объект данных группы и сразу задаем ей измененное название "кerh"
             newData.Header = null;                      // Указываем, что заголовок (хедер) группы при модификации менять не нужно или оставить пустым
             newData.Footer = "xcb";                     // Задаем новое значение подвала (футера) группы — строку "xcb"
 
-            app.Groups.GetOrCreateGroup(n);             // Проверка существования группы по указанному индексу n и её автоматическое создание при отсутствии
-            app.Groups.Modify(n, newData);              // Вызываем хелпер групп и передаем команду изменить n-ую группу (индекс n), применив новые данные
+            app.Groups.GetOrCreateGroup(0);             // Проверка существования группы по указанному индексу n и её автоматическое создание при отсутствии
+
+            List<GroupData> oldGroups = app.Groups.GetGroupList();
+
+            app.Groups.Modify(0, newData);              // Вызываем хелпер групп и передаем команду изменить n-ую группу (индекс n), применив новые данные
+
+            List<GroupData> newGroups = app.Groups.GetGroupList();
+            oldGroups[0].Name = newData.Name;
+            oldGroups.Sort();
+            newGroups.Sort();
+            Assert.AreEqual(oldGroups, newGroups);
         }
     }
 }

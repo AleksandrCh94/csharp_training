@@ -50,10 +50,9 @@ namespace WebAddressbookTests                               // Простран�
 
         public ContactHelper GetOrCreateContact(int index)                      // Метод обеспечения предусловия: получение существующего контакта или его автосоздание при отсутствии
         {
-            int rowIndex = index + 1;                                           // Вычисляем реальный номер строки в таблице (смещаем на 1, так как tr[1] — это заголовок)
-
             if (!IsElementPresent(By.XPath                                      // Проверка: если в таблице по указанному смещенному индексу строки отсутствует чекбокс контакта
-                ("//table[@id='maintable']/tbody/tr["+rowIndex+"]/td/input")))  // XPath-локатор чекбокса с инкрементом индекса для пропуска строки заголовков
+                ("//table[@id='maintable']/tbody/tr" +
+                "[" + (index + 2) + "]/td/input")))                             // XPath-локатор чекбокса с инкрементом индекса для пропуска строки заголовков
             {
                 ContactData contact = new ContactData("alex");                  // Создаем тестовые данные имени нового контакта на случай его отсутствия
                 contact.LastName = "chernenkov";                                // Задаем тестовую фамилию для создаваемого контакта
@@ -65,19 +64,16 @@ namespace WebAddressbookTests                               // Простран�
 
         public ContactHelper SelectContact(int index)                                   // Низкоуровневый метод выбора чекбокса контакта по порядковому номеру строки
         {
-            int rowIndex = index + 1;                                                   // Вычисляем реальный номер строки в таблице (смещаем на 1, так как tr[1] — это заголовок)
-
             driver.FindElement(By.XPath                                                 // Нахождение элемента чекбокса через динамический XPath, куда подставляется индекс строки
-                ("//table[@id='maintable']/tbody/tr["+rowIndex+ "]/td/input")).Click(); // Выполнение клика для отметки контакта галочкой
+                ("//table[@id='maintable']/tbody/tr" +
+                "[" + (index + 1) + "]/td/input")).Click();                             // Выполнение клика для отметки контакта галочкой
             return this;                                                                // Возвращаем ссылку на текущий объект хелпера
         }
 
         public ContactHelper InitModifyCreation(int index)                              // Низкоуровневый метод открытия формы редактирования контакта через таблицу
         {
-            int rowIndex = index + 1;                                                   // Вычисляем реальный номер строки в таблице (смещаем на 1, так как tr[1] — это заголовок)
-
             driver.FindElement(By.XPath                                                 // Поиск картинки-иконки редактирования в 8-й ячейке указанной по индексу строки таблицы контактов
-                ("//table[@id='maintable']/tbody/tr["+ rowIndex + "]/td[8]/a/img"))
+                ("//table[@id='maintable']/tbody/tr[" + (index + 2) + "]/td[8]/a/img"))
                 .Click();                                                               // Клик по иконке для перехода к форме модификации
             return this;                                                                // Возвращаем ссылку на текущий объект хелпера
         }
@@ -112,5 +108,19 @@ namespace WebAddressbookTests                               // Простран�
             driver.FindElement(By.LinkText("home page")).Click();   // Поиск ссылки с текстом "home page" и выполнение клика по ней
             return this;                                            // Возвращаем ссылку на текущий объект хелпера
         }
+
+        public List<ContactData> GetContactsList()
+        {
+            List<ContactData> contacts = new List<ContactData>();
+
+            ICollection<IWebElement> elements =
+                driver.FindElements(By.CssSelector("tr[name=\"entry\"]"));
+            foreach (IWebElement element in elements)
+            {
+                contacts.Add(new ContactData(element.Text));
+            }
+            return contacts;
+        }
+
     }
 }

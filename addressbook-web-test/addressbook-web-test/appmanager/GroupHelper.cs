@@ -52,26 +52,26 @@ namespace WebAddressbookTests                           // Пространст�
             return this;                                // Возвращаем ссылку на текущий объект хелпера
         }
 
-        public GroupHelper GetOrCreateGroup(int index)  // Метод обеспечения предусловия: проверка наличия группы или её создание «на лету»
+        public GroupHelper GetOrCreateGroup(int index)      // Метод обеспечения предусловия: проверка наличия группы или её создание «на лету»
         {
-            manager.Navigator.GoToGroupsPage();         // Переход на страницу со списком групп
+            manager.Navigator.GoToGroupsPage();             // Переход на страницу со списком групп
             if (!IsElementPresent(By.XPath
-                ("//span[" + index + "]/input")))       // Проверка: если на странице отсутствует чекбокс группы с указанным порядковым номером
+                ("//span[" + (index + 1) + "]/input")))     // Проверка: если на странице отсутствует чекбокс группы с указанным порядковым номером
             {
-                GroupData group = new GroupData("aaa"); // Подготовка тестовых данных названия новой группы
-                group.Header = "wegwg";                 // Задание тестового заголовка для новой группы
-                group.Footer = "wrwer";                 // Задание тестового подвала для новой группы
+                GroupData group = new GroupData("aaa");     // Подготовка тестовых данных названия новой группы
+                group.Header = "wegwg";                     // Задание тестового заголовка для новой группы
+                group.Footer = "wrwer";                     // Задание тестового подвала для новой группы
 
-                Create(group);                          // Вызываем метод создания группы, чтобы наполнить таблицу данными
+                Create(group);                              // Вызываем метод создания группы, чтобы наполнить таблицу данными
             }
-            return this;                                // Возвращаем ссылку на текущий объект хелпера
+            return this;                                    // Возвращаем ссылку на текущий объект хелпера
         }
 
-        public GroupHelper SelectGroup(int index)           // Низкоуровневый метод выбора чекбокса группы по её номеру в списке
+        public GroupHelper SelectGroup(int index)               // Низкоуровневый метод выбора чекбокса группы по её номеру в списке
         {
             driver.FindElement(By.XPath
-                ("//span[" + index + "]/input")).Click();   // Поиск инпута внутри тега span по динамическому XPath-индексу и клик для выбора
-            return this;                                    // Возвращаем ссылку на текущий объект хелпера
+                ("//span[" + (index + 1) + "]/input")).Click(); // Поиск инпута внутри тега span по динамическому XPath-индексу и клик для выбора
+            return this;                                        // Возвращаем ссылку на текущий объект хелпера
         }
 
         public GroupHelper InitGroupModification()          // Низкоуровневый метод перехода в режим редактирования группы
@@ -110,6 +110,22 @@ namespace WebAddressbookTests                           // Пространст�
         {
             driver.FindElement(By.LinkText("group page")).Click();  // Нахождение ссылки по точному тексту "group page" и выполнение клика
             return this;                                            // Возвращаем ссылку на текущий объект хелпера
+        }
+
+        public List<GroupData> GetGroupList()
+        {
+            List<GroupData> groups = new List<GroupData>();
+
+            manager.Navigator.GoToGroupsPage();         // Переход на страницу со списком групп
+
+            ICollection<IWebElement> elements = 
+                driver.FindElements(By.CssSelector("span.group"));
+
+            foreach (IWebElement element in elements) 
+            {
+                groups.Add(new GroupData(element.Text));                
+            }
+            return groups;
         }
     }
 }

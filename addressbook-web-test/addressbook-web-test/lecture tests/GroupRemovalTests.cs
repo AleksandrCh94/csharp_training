@@ -2,6 +2,7 @@
 using System.Text;                          // Подключение инструментов для кодирования и сборки текста
 using System.Text.RegularExpressions;       // Подключение поддержки работы с регулярными выражениями
 using System.Threading;                     // Подключение библиотеки для управления потоками и ожиданиями
+using System.Collections.Generic;
 using NUnit.Framework;                      // Подключение библиотек тестового фреймворка NUnit
 
 namespace WebAddressbookTests                       // Пространство имен, объединяющее тесты проекта
@@ -13,10 +14,15 @@ namespace WebAddressbookTests                       // Пространство 
         [Test]                                      // Атрибут NUnit: помечает метод как отдельный выполняемый тест-кейс
         public void GroupRemovalTest()              // Тест-кейс: проверка удаления существующей группы
         {
-            int n = 1;                              // Создаем переменную, хранящую индекс n-ой группы 
+            List<GroupData> oldGroups = app.Groups.GetGroupList();
 
-            app.Groups.GetOrCreateGroup(n);         // Гарантируем наличие группы на указанной позиции (создаем, если списка не хватает)
-            app.Groups.Remove(n);                   // Вызываем метод хелпера групп для удаления n-ой группы в списке (по порядковому индексу n)
+            app.Groups.GetOrCreateGroup(0);         // Гарантируем наличие группы на указанной позиции (создаем, если списка не хватает)
+            app.Groups.Remove(0);                   // Вызываем метод хелпера групп для удаления n-ой группы в списке (по порядковому индексу n)
+            
+            List<GroupData> newGroups = app.Groups.GetGroupList();
+
+            oldGroups.RemoveAt(0);
+            Assert.AreEqual(oldGroups, newGroups);
         }
     }
 }

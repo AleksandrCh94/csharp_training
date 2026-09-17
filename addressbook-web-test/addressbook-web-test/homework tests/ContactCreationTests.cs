@@ -1,8 +1,9 @@
-﻿using System;                               // Подключение базовых системных типов .NET
+﻿using NUnit.Framework;                      // Подключение тестового фреймворка NUnit
+using System;                               // Подключение базовых системных типов .NET
+using System.Security.Cryptography;
 using System.Text;                          // Подключение поддержки работы с кодировками и строками
 using System.Text.RegularExpressions;       // Подключение классов для обработки регулярных выражений
 using System.Threading;                     // Подключение инструментов для управления потоками и задержками
-using NUnit.Framework;                      // Подключение тестового фреймворка NUnit
 
 namespace WebAddressbookTests                           // Пространство имен для логической группировки классов проекта
 {
@@ -15,8 +16,19 @@ namespace WebAddressbookTests                           // Пространст�
         {
             ContactData contact = new ContactData("alex");  // Создаем объект данных контакта и передаем обязательное имя "alex"
             contact.LastName = "chernenkov";                // Заполняем поле фамилии создаваемого контакта строкой "chernenkov"
+            
+            List<ContactData> oldContacts = app.Contacts.GetContactsList();
 
             app.Contacts.Create(contact);                   // Передаем модель контакта в хелпер контактов для заполнения формы на сайте
+
+            List<ContactData> newContacts = app.Contacts.GetContactsList();
+            oldContacts.Add(contact);
+            oldContacts.Sort();
+            newContacts.Sort();
+            //Console.WriteLine(string.Join("\n", oldContacts));
+            //Console.WriteLine("\n");
+            //Console.WriteLine(string.Join("\n", newContacts));          
+            Assert.AreEqual(oldContacts, newContacts);
         }
 
         [Test]                                          // Атрибут NUnit: помечает метод как тест-кейс для проверки создания пустого контакта
@@ -25,7 +37,16 @@ namespace WebAddressbookTests                           // Пространст�
             ContactData contact = new ContactData("");  // Создаем объект данных контакта с пустой строкой вместо имени
             contact.LastName = "";                      // Задаем пустое текстовое значение для фамилии контакта
 
+            List<ContactData> oldContacts = app.Contacts.GetContactsList();
+
             app.Contacts.Create(contact);               // Передаем пустую модель контакта в хелпер для сохранения в адресной книге
+
+            List<ContactData> newContacts = app.Contacts.GetContactsList();
+
+            oldContacts.Add(contact);
+            oldContacts.Sort();
+            newContacts.Sort();
+            Assert.AreEqual(oldContacts, newContacts);
         }
     }
 }

@@ -13,10 +13,15 @@ namespace WebAddressbookTests                       // Пространство 
         [Test]                                      // Атрибут NUnit: помечает метод как запускаемый автоматический тест-кейс
         public void ContactRemovalTest()            // Тест-кейс: проверка удаления существующего контакта из адресной книги
         {
-            int n = 1;                              // Создаем переменную, хранящую индекс n-ого контакта 
+            List<ContactData> oldContacts = app.Contacts.GetContactsList();
 
-            app.Contacts.GetOrCreateContact(n);     // Проверка предусловия: гарантируем наличие n-ого контакта перед его удалением
-            app.Contacts.Remove(n);                 // Вызываем хелпер контактов для удаления n-ого контакта из списка (по порядковому индексу n)
+            app.Contacts.GetOrCreateContact(0);     // Проверка предусловия: гарантируем наличие n-ого контакта перед его удалением
+            app.Contacts.Remove(0);                 // Вызываем хелпер контактов для удаления n-ого контакта из списка (по порядковому индексу n)
+
+            List<ContactData> newContacts = app.Contacts.GetContactsList();
+
+            oldContacts.RemoveAt(0);
+            Assert.AreEqual(oldContacts, newContacts);
         }
     }
 }
