@@ -14,15 +14,23 @@ namespace WebAddressbookTests                       // Пространство 
         [Test]                                      // Атрибут NUnit: помечает метод как отдельный выполняемый тест-кейс
         public void GroupRemovalTest()              // Тест-кейс: проверка удаления существующей группы
         {
-            List<GroupData> oldGroups = app.Groups.GetGroupList();
+            List<GroupData> oldGroups = app.Groups.GetGroupsList();
 
             app.Groups.GetOrCreateGroup(0);         // Гарантируем наличие группы на указанной позиции (создаем, если списка не хватает)
             app.Groups.Remove(0);                   // Вызываем метод хелпера групп для удаления n-ой группы в списке (по порядковому индексу n)
-            
-            List<GroupData> newGroups = app.Groups.GetGroupList();
 
+            Assert.AreEqual(oldGroups.Count - 1, app.Groups.GetGroupsCount());
+
+            List<GroupData> newGroups = app.Groups.GetGroupsList();
+
+            GroupData toBeRemoved = oldGroups[0];
             oldGroups.RemoveAt(0);
             Assert.AreEqual(oldGroups, newGroups);
+
+            foreach (GroupData group in newGroups)
+            {
+                Assert.AreNotEqual(group.Id, toBeRemoved.Id);
+            }
         }
     }
 }

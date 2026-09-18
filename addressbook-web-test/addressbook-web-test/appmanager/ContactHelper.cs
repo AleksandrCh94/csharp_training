@@ -88,18 +88,21 @@ namespace WebAddressbookTests                               // Простран�
         public ContactHelper SubmitContactCreation()                // Низкоуровневый метод сохранения только что созданного контакта
         {
             driver.FindElement(By.XPath("//input[19]")).Click();    // Поиск кнопки отправки формы по её порядковому номеру (19-й тег input) и клик по ней
+            contactCache = null;
             return this;                                            // Возвращаем ссылку на текущий объект хелпера
         }
 
         public ContactHelper SubmitContactModification()            // Низкоуровневый метод сохранения отредактированных данных контакта
         {
             driver.FindElement(By.XPath("//input[20]")).Click();    // Поиск кнопки сохранения изменений по её порядковому номеру (20-й тег input) и клик по ней
+            contactCache = null;
             return this;                                            // Возвращаем ссылку на текущий объект хелпера
         }
 
         public ContactHelper RemoveContact()                        // Низкоуровневый метод инициации удаления выбранных контактов
         {
             driver.FindElement(By.Name("delete")).Click();          // Поиск управляющей кнопки удаления по её имени name="delete" и нажатие на неё
+            contactCache = null;
             return this;                                            // Возвращаем ссылку на текущий объект хелпера
         }
 
@@ -109,18 +112,30 @@ namespace WebAddressbookTests                               // Простран�
             return this;                                            // Возвращаем ссылку на текущий объект хелпера
         }
 
+        private List<ContactData> contactCache = null;
+
         public List<ContactData> GetContactsList()
         {
-            List<ContactData> contacts = new List<ContactData>();
-
-            ICollection<IWebElement> elements =
-                driver.FindElements(By.CssSelector("tr[name=\"entry\"]"));
-            foreach (IWebElement element in elements)
+            if (contactCache == null)
             {
-                contacts.Add(new ContactData(element.Text));
+                contactCache = new List<ContactData>();
+
+                ICollection<IWebElement> elements =
+                    driver.FindElements(By.CssSelector("tr[name=\"entry\"]"));
+
+                foreach (IWebElement element in elements)
+                {
+                    contactCache.Add(new ContactData(element.Text) {
+                        Id = element.FindElement(By.TagName("input")).GetAttribute("id")
+                    });
+                }
             }
-            return contacts;
+            return new List<ContactData>(contactCache);
         }
 
+        public object? GetContactsCount()
+        {
+            return driver.FindElements(By.CssSelector("tr[name=\"entry\"]")).Count;
+        }
     }
 }

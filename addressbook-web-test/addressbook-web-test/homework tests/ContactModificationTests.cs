@@ -19,11 +19,13 @@ namespace WebAddressbookTests                               // Простран�
             app.Contacts.GetOrCreateContact(0);                 // Проверка предусловия: гарантируем наличие n-ого контакта перед его модификацией
 
             List<ContactData> oldContacts = app.Contacts.GetContactsList();
+            ContactData oldData = oldContacts[0];
 
             app.Contacts.Modify(0, newData);                    // Вызываем хелпер контактов и передаем команду изменить n-ый контакт (индекс n), применив новые данные
 
-            List<ContactData> newContacts = app.Contacts.GetContactsList();
+            Assert.AreEqual(oldContacts.Count, app.Contacts.GetContactsList());
 
+            List<ContactData> newContacts = app.Contacts.GetContactsList();
             oldContacts[0].FirstName = newData.FirstName;
             oldContacts[0].LastName = newData.LastName;
             oldContacts.Sort();
@@ -31,6 +33,15 @@ namespace WebAddressbookTests                               // Простран�
             //Console.WriteLine(string.Join("\n", oldContacts));
             //Console.WriteLine(string.Join("\n", newContacts));
             Assert.AreEqual(oldContacts, newContacts);
+
+            foreach (ContactData contact in newContacts)
+            {
+                if (contact.Id == oldData.Id)
+                {
+                    Assert.AreEqual(newData.FirstName, contact.FirstName);
+                    Assert.AreEqual(newData.LastName, contact.LastName);
+                }
+            }
         }
     }
 }

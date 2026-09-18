@@ -76,5 +76,7 @@ namespace WebAddressbookTests                   // Пространство им
                 lastname = value?.Trim();       // Обновляем значение приватного поля lastname и удаляем пробелы по краям
             }
         }
+
+        public string Id { get; set; }                  // Публичное свойство для работы с полем footer
     }
 }

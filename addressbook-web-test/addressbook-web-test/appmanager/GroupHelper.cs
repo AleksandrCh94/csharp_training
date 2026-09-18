@@ -91,18 +91,21 @@ namespace WebAddressbookTests                           // Пространст�
         public GroupHelper SubmitGroupCreation()            // Низкоуровневый метод отправки формы создания новой группы
         {
             driver.FindElement(By.Name("submit")).Click();  // Нахождение кнопки сохранения по атрибуту name="submit" и клик по ней
+            groupCache = null;
             return this;                                    // Возвращаем ссылку на текущий объект хелпера
         }
 
         public GroupHelper SubmitGroupModification()        // Низкоуровневый метод отправки формы редактирования существующей группы
         {
             driver.FindElement(By.Name("update")).Click();  // Нахождение кнопки применения изменений по атрибуту name="update" и клик по ней
+            groupCache = null;
             return this;                                    // Возвращаем ссылку на текущий объект хелпера
         }
 
         public GroupHelper RemoveGroup()                    // Низкоуровневый метод отправки команды на удаление выбранных групп
         {
             driver.FindElement(By.Name("delete")).Click();  // Поиск кнопки удаления по атрибуту name="delete" и клик по ней
+            groupCache = null;
             return this;                                    // Возвращаем ссылку на текущий объект хелпера
         }
 
@@ -112,20 +115,31 @@ namespace WebAddressbookTests                           // Пространст�
             return this;                                            // Возвращаем ссылку на текущий объект хелпера
         }
 
-        public List<GroupData> GetGroupList()
+        private List<GroupData> groupCache = null;
+
+        public List<GroupData> GetGroupsList()
         {
-            List<GroupData> groups = new List<GroupData>();
-
-            manager.Navigator.GoToGroupsPage();         // Переход на страницу со списком групп
-
-            ICollection<IWebElement> elements = 
-                driver.FindElements(By.CssSelector("span.group"));
-
-            foreach (IWebElement element in elements) 
+            if  (groupCache == null)
             {
-                groups.Add(new GroupData(element.Text));                
-            }
-            return groups;
+                groupCache = new List<GroupData>();
+                manager.Navigator.GoToGroupsPage();         // Переход на страницу со списком групп
+
+                ICollection<IWebElement> elements =
+                    driver.FindElements(By.CssSelector("span.group"));
+
+                foreach (IWebElement element in elements)
+                {
+                    groupCache.Add(new GroupData(element.Text) {
+                        Id = element.FindElement(By.TagName("input")).GetAttribute("value")
+                    });
+                }
+            }            
+            return new List<GroupData>(groupCache);
+        }
+
+        public object? GetGroupsCount()
+        {
+            return driver.FindElements(By.CssSelector("span.group")).Count;
         }
     }
 }

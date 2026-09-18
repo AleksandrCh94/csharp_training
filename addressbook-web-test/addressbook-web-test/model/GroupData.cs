@@ -5,14 +5,10 @@ using System.Text;                          // Подключение подде
 namespace WebAddressbookTests               // Пространство имен проекта
 {
     public class GroupData : IEquatable<GroupData>, IComparable<GroupData>              // Класс-модель, описывающий сущность "Группа контактов"
-    {
-        private string name;                // Приватное поле для хранения названия группы
-        private string header = "";         // Приватное поле для хедера (шапки) группы
-        private string footer = "";         // Приватное поле для футера (подвала) группы
-
+    {       
         public GroupData(string name)       // Конструктор класса, требующий название группы при её создании
         {
-            this.name = name;               // Записываем переданное имя в приватное поле name
+            Name = name;               // Записываем переданное имя в приватное поле name
         }
 
         public bool Equals(GroupData other)
@@ -47,40 +43,12 @@ namespace WebAddressbookTests               // Пространство имен
             return Name.CompareTo(other.Name);
         }
 
-        public string Name                  // Публичное свойство для работы с полем name
-        {                                   
-            get                             // Блок считывания названия группы
-            {
-                return name;                // Отдаем значение из приватного поля name
-            }
-            set                             // Блок изменения названия группы
-            {
-                name = value;               // Присваиваем новое значение приватному полю name
-            }
-        }
+        public string Name { get; set; }                    // Публичное свойство для работы с полем name
+        
+        public string Header { get; set; }            // Публичное свойство для работы с полем header
+        
+        public string Footer { get; set; }                  // Публичное свойство для работы с полем footer
 
-        public string Header                // Публичное свойство для работы с полем header
-        {                                   
-            get                             // Блок считывания текста шапки
-            {
-                return header;              // Отдаем значение из приватного поля header
-            }
-            set                             // Блок изменения текста шапки
-            {
-                header = value;             // Присваиваем новое значение приватному полю header
-            }
-        }
-
-        public string Footer                // Публичное свойство для работы с полем footer
-        {                                   
-            get                             // Блок считывания текста подвала
-            {
-                return footer;              // Отдаем значение из приватного поля footer
-            }
-            set                             // Блок изменения текста подвала
-            {
-                footer = value;             // Присваиваем новое значение приватному полю footer
-            }
-        }
+        public string Id { get; set; }                  // Публичное свойство для работы с полем footer
     }
 }

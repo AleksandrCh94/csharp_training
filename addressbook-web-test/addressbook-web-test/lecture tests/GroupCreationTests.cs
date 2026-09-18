@@ -18,11 +18,13 @@ namespace WebAddressbookTests                       // Пространство 
             group.Header = "wegwg";                 // Заполняем поле заголовка (шапки) группы строкой "wegwg"
             group.Footer = "wrwer";                 // Заполняем поле подвала (футера) группы строкой "wrwer"
 
-            List<GroupData> oldGroups = app.Groups.GetGroupList();
+            List<GroupData> oldGroups = app.Groups.GetGroupsList();
 
             app.Groups.Create(group);               // Вызываем метод хелпера групп для физического добавления группы на сайт
 
-            List<GroupData> newGroups = app.Groups.GetGroupList();
+            Assert.AreEqual(oldGroups.Count + 1, app.Groups.GetGroupsCount());
+
+            List<GroupData> newGroups = app.Groups.GetGroupsList();
             oldGroups.Add(group);
             oldGroups.Sort();
             newGroups.Sort();
@@ -38,11 +40,13 @@ namespace WebAddressbookTests                       // Пространство 
             group.Header = "";                      // Задаем пустое текстовое значение для заголовка группы
             group.Footer = "";                      // Задаем пустое текстовое значение для подвала группы
 
-            List<GroupData> oldGroups = app.Groups.GetGroupList();
+            List<GroupData> oldGroups = app.Groups.GetGroupsList();
 
             app.Groups.Create(group);               // Передаем пустую модель группы в хелпер для создания на сайте
 
-            List<GroupData> newGroups = app.Groups.GetGroupList();
+            Assert.AreEqual(oldGroups.Count + 1, app.Groups.GetGroupsCount());
+
+            List<GroupData> newGroups = app.Groups.GetGroupsList();
             oldGroups.Add(group);
             oldGroups.Sort();
             newGroups.Sort();
@@ -56,11 +60,13 @@ namespace WebAddressbookTests                       // Пространство 
             group.Header = "";                      // Задаем пустое текстовое значение для заголовка группы
             group.Footer = "";                      // Задаем пустое текстовое значение для подвала группы
 
-            List<GroupData> oldGroups = app.Groups.GetGroupList();
+            List<GroupData> oldGroups = app.Groups.GetGroupsList();
 
             app.Groups.Create(group);               // Передаем пустую модель группы в хелпер для создания на сайте
 
-            List<GroupData> newGroups = app.Groups.GetGroupList();
+            Assert.AreEqual(oldGroups.Count + 1, app.Groups.GetGroupsCount());
+
+            List<GroupData> newGroups = app.Groups.GetGroupsList();
             oldGroups.Add(group);
             oldGroups.Sort();
             newGroups.Sort();

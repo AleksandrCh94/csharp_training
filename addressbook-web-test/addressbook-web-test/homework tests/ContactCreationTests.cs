@@ -21,6 +21,8 @@ namespace WebAddressbookTests                           // Пространст�
 
             app.Contacts.Create(contact);                   // Передаем модель контакта в хелпер контактов для заполнения формы на сайте
 
+            Assert.AreEqual(oldContacts.Count + 1, app.Contacts.GetContactsCount());
+
             List<ContactData> newContacts = app.Contacts.GetContactsList();
             oldContacts.Add(contact);
             oldContacts.Sort();
@@ -41,8 +43,28 @@ namespace WebAddressbookTests                           // Пространст�
 
             app.Contacts.Create(contact);               // Передаем пустую модель контакта в хелпер для сохранения в адресной книге
 
-            List<ContactData> newContacts = app.Contacts.GetContactsList();
+            Assert.AreEqual(oldContacts.Count + 1, app.Contacts.GetContactsCount());
 
+            List<ContactData> newContacts = app.Contacts.GetContactsList();
+            oldContacts.Add(contact);
+            oldContacts.Sort();
+            newContacts.Sort();
+            Assert.AreEqual(oldContacts, newContacts);
+        }
+
+        [Test]                                          // Атрибут NUnit: помечает метод как тест-кейс для проверки создания пустого контакта
+        public void BadNameContactCreationTest()          // Тест-кейс: успешное добавление контакта с пустыми текстовыми полями
+        {
+            ContactData contact = new ContactData("a'a");  // Создаем объект данных контакта с пустой строкой вместо имени
+            contact.LastName = "";                      // Задаем пустое текстовое значение для фамилии контакта
+
+            List<ContactData> oldContacts = app.Contacts.GetContactsList();
+
+            app.Contacts.Create(contact);               // Передаем пустую модель контакта в хелпер для сохранения в адресной книге
+
+            Assert.AreEqual(oldContacts.Count + 1, app.Contacts.GetContactsCount());
+
+            List<ContactData> newContacts = app.Contacts.GetContactsList();
             oldContacts.Add(contact);
             oldContacts.Sort();
             newContacts.Sort();

@@ -19,15 +19,26 @@ namespace WebAddressbookTests                           // Пространст�
 
             app.Groups.GetOrCreateGroup(0);             // Проверка существования группы по указанному индексу n и её автоматическое создание при отсутствии
 
-            List<GroupData> oldGroups = app.Groups.GetGroupList();
+            List<GroupData> oldGroups = app.Groups.GetGroupsList();
+            GroupData oldData = oldGroups[0];
 
             app.Groups.Modify(0, newData);              // Вызываем хелпер групп и передаем команду изменить n-ую группу (индекс n), применив новые данные
 
-            List<GroupData> newGroups = app.Groups.GetGroupList();
+            Assert.AreEqual(oldGroups.Count, app.Groups.GetGroupsCount());
+
+            List<GroupData> newGroups = app.Groups.GetGroupsList();
             oldGroups[0].Name = newData.Name;
             oldGroups.Sort();
             newGroups.Sort();
             Assert.AreEqual(oldGroups, newGroups);
+
+            foreach (GroupData group in newGroups)
+            {
+                if (group.Id == oldData.Id)
+                {
+                    Assert.AreEqual(newData.Name, group.Name);
+                }
+            }
         }
     }
 }
