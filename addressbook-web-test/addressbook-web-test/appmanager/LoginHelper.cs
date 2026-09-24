@@ -36,15 +36,20 @@ namespace WebAddressbookTests                           // Пространст�
 
         public bool IsLoggedIn()                            // Метод проверки факта авторизации в системе (любым пользователем)
         {
-            return IsElementPresent(By.Name("logout"));     // Проверяем присутствие на странице кнопки или ссылки с атрибутом name="logout" и возвращаем результат
+            return IsElementPresent(By.Name("logout"));     // Если на странице присутствует элемент (кнопка/ссылка) с атрибутом name="logout" — значит, вход выполнен
         }
 
         public bool IsLoggedIn(AccountData account)         // Метод проверки авторизации под конкретной учетной записью
         {
-            return IsLoggedIn()                             // Проверяем, что в систему в принципе осуществлен вход
-                && driver.FindElement(By.Name("logout"))
-                .FindElement(By.TagName("b")).Text          // Ищем внутри элемента логаута дочерний тег <b> с текстом имени
-                    == "(" + account.Username + ")";        // Сравниваем полученный текст из тега с ожидаемой строкой формата "(имя_пользователя)"
+            return IsLoggedIn()                             // Сначала проверяем, что в систему в принципе осуществлен вход
+                && GetLoggetUserName() == account.Username; // Затем сравниваем имя текущего пользователя в интерфейсе с ожидаемым логином из модели
+        }
+
+        public string GetLoggetUserName()                           // Метод извлечения имени текущего авторизованного пользователя из верстки сайта
+        {
+            string text = driver.FindElement(By.Name("logout"))
+                .FindElement(By.TagName("b")).Text;                 // Находим родительский элемент name="logout", а внутри него — дочерний HTML-тег <b>, где приложение выводит имя вида "(admin)"
+            return text.Substring(1, text.Length - 2);              // Парсинг строки: обрезаем первый и последний символы (обычно это круглые скобки вокруг имени, например, преобразуем "(admin)" в "admin")
         }
 
         public void Logout()                                        // Метод безопасного выхода из учетной записи

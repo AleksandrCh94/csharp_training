@@ -14,20 +14,26 @@ namespace WebAddressbookTests                       // Пространство 
         [Test]                                      // Атрибут NUnit: помечает метод как запускаемый автоматический тест-кейс
         public void ContactRemovalTest()            // Тест-кейс: проверка удаления существующего контакта из адресной книги
         {
-            List<ContactData> oldContacts = app.Contacts.GetContactsList();
+            app.Contacts.GetOrCreateContact(0);     // Предусловие: Гарантируем наличие хотя бы одного контакта на первой позиции (индекс 0) — создаем его, если список пуст
 
-            app.Contacts.GetOrCreateContact(0);     // Проверка предусловия: гарантируем наличие n-ого контакта перед его удалением
-            app.Contacts.Remove(0);                 // Вызываем хелпер контактов для удаления n-ого контакта из списка (по порядковому индексу n)
+            List<ContactData> oldContacts = 
+                app.Contacts.GetContactsList();     // Шаг 1: Получаем исходный список контактов с веб-страницы до выполнения удаления
 
-            Assert.AreEqual(oldContacts.Count - 1, app.Contacts.GetContactsList());
+            app.Contacts.Remove(0);                 // Шаг 2: Вызываем хелпер контактов для удаления самого первого контакта (по порядковому индексу 0)
 
-            List<ContactData> newContacts = app.Contacts.GetContactsList();
+            Assert.AreEqual(oldContacts.Count - 1,
+                app.Contacts.GetContactsCount());   // Проверка 1 (Быстрая): Убеждаемся, что текущее количество строк на странице (GetContactsCount) ровно на 1 меньше, чем было изначально
 
-            ContactData toBeRemoved = oldContacts[0];
-            oldContacts.RemoveAt(0);
-            Assert.AreEqual(oldContacts, newContacts);
+            List<ContactData> newContacts = 
+                app.Contacts.GetContactsList();     // Шаг 3: Получаем новый, обновленный список контактов с веб-страницы после удаления
 
-            foreach (ContactData contact in newContacts)
+            ContactData toBeRemoved = oldContacts[0];   // Запоминаем объект контакта, который мы намеревались удалить (самый первый из исходного списка)
+            
+            oldContacts.RemoveAt(0);                    // Моделируем удаление этого же контакта локально в нашем старом списке в оперативной памяти
+
+            Assert.AreEqual(oldContacts, newContacts);  // Проверка 2 (Глубокая): Сравниваем модифицированный старый список и новый список с сайта (проверяются Фамилия и Имя благодаря IEquatable)
+
+            foreach (ContactData contact in newContacts)    // Проверка 3 (Дополнительная): Поэлементно проверяем, что ID удаленного контакта больше не встречается ни у одного из оставшихся контактов
             {
                 Assert.AreNotEqual(contact.Id, toBeRemoved.Id);
             }

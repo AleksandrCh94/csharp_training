@@ -17,26 +17,33 @@ namespace WebAddressbookTests                           // Пространст�
             newData.Header = null;                      // Указываем, что заголовок (хедер) группы при модификации менять не нужно или оставить пустым
             newData.Footer = "xcb";                     // Задаем новое значение подвала (футера) группы — строку "xcb"
 
-            app.Groups.GetOrCreateGroup(0);             // Проверка существования группы по указанному индексу n и её автоматическое создание при отсутствии
+            app.Groups.GetOrCreateGroup(0);             // Предусловие: Гарантируем наличие хотя бы одной группы на первой позиции (индекс 0) — создаем её, если список пуст
 
-            List<GroupData> oldGroups = app.Groups.GetGroupsList();
-            GroupData oldData = oldGroups[0];
+            List<GroupData> oldGroups = 
+                app.Groups.GetGroupsList();             // Шаг 1: Получаем исходный список групп с сайта до выполнения модификации
+            
+            GroupData oldData = oldGroups[0];           // Сохраняем во временную переменную старые данные модифицируемой группы (чтобы запомнить её уникальный Id)
 
-            app.Groups.Modify(0, newData);              // Вызываем хелпер групп и передаем команду изменить n-ую группу (индекс n), применив новые данные
+            app.Groups.Modify(0, newData);              // Шаг 2: Вызываем хелпер групп и передаем команду изменить самую первую группу (индекс 0), применив новые данные newData
 
-            Assert.AreEqual(oldGroups.Count, app.Groups.GetGroupsCount());
+            Assert.AreEqual(oldGroups.Count, 
+                app.Groups.GetGroupsCount());           // Проверка 1 (Быстрая): Убеждаемся, что общее количество групп на странице (GetGroupsCount) осталось прежним
 
-            List<GroupData> newGroups = app.Groups.GetGroupsList();
-            oldGroups[0].Name = newData.Name;
-            oldGroups.Sort();
+            List<GroupData> newGroups = 
+                app.Groups.GetGroupsList();             // Шаг 3: Получаем новый, обновленный список групп с веб-страницы после модификации
+            
+            oldGroups[0].Name = newData.Name;           // Моделируем изменение имени локально в нашем старом списке в оперативной памяти для первой группы
+            
+            oldGroups.Sort();                           // Сортируем оба списка, так как после изменения названия на сайте порядок отображения групп мог измениться (благодаря IComparable в GroupData)
             newGroups.Sort();
-            Assert.AreEqual(oldGroups, newGroups);
+            
+            Assert.AreEqual(oldGroups, newGroups);      // Проверка 2 (Глубокая): Сравниваем отсортированные списки (проверяются имена групп благодаря методу Equals в GroupData)
 
-            foreach (GroupData group in newGroups)
+            foreach (GroupData group in newGroups)      // Проверка 3 (Точечная): Пробегаем по новому списку и проверяем, что у группы с тем же ID имя действительно обновилось на новое
             {
-                if (group.Id == oldData.Id)
+                if (group.Id == oldData.Id)             // Находим среди актуальных групп ту, которую мы изменяли (по совпадению Id)
                 {
-                    Assert.AreEqual(newData.Name, group.Name);
+                    Assert.AreEqual(newData.Name, group.Name);  // Проверяем, что её имя на сайте теперь в точности совпадает с переданным newData.Name
                 }
             }
         }

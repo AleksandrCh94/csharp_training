@@ -4,51 +4,52 @@ using System.Text;                          // Подключение подде
 
 namespace WebAddressbookTests               // Пространство имен проекта
 {
-    public class GroupData : IEquatable<GroupData>, IComparable<GroupData>              // Класс-модель, описывающий сущность "Группа контактов"
+    public class GroupData : IEquatable<GroupData>, 
+        IComparable<GroupData>              // Класс-модель, описывающий сущность "Группа контактов"
     {       
         public GroupData(string name)       // Конструктор класса, требующий название группы при её создании
         {
-            Name = name;               // Записываем переданное имя в приватное поле name
+            Name = name;                    // Записываем переданное имя в автоматическое свойство Name
         }
 
-        public bool Equals(GroupData other)
+        public bool Equals(GroupData other)             // Метод интерфейса IEquatable для проверки равенства текущей группы с другой группой GroupData
         {
-            if (Object.ReferenceEquals(other, null))
+            if (Object.ReferenceEquals(other, null))    // Проверка: если объект для сравнения не инициализирован (равен null)
             {
-                return false;
+                return false;                           // Объекты гарантированно не равны
             }
-            if (Object.ReferenceEquals(this, other))
+            if (Object.ReferenceEquals(this, other))    // Проверка на идентичность ссылок: ведут ли обе переменные на один и тот же объект в памяти
             {
-                return true;
+                return true;                            // Это один и тот же объект, они абсолютно равны
             }
-            return Name == other.Name;
+            return Name == other.Name;                  // Бизнес-логика сравнения: группы считаются равными, если у них совпадают названия (Name)
         }
 
-        public override int GetHashCode()
+        public override int GetHashCode()       // Переопределение базового метода получения хэш-кода (необходимо для корректного поиска групп в хэш-таблицах и коллекциях)
         {
-            return Name.GetHashCode();
+            return Name.GetHashCode();          // Возвращаем хэш-код строки названия группы
         }
 
-        public override string ToString()
+        public override string ToString()       // Переопределение метода приведения к строке (используется NUnit для вывода понятных логов при падении тестов в Assert)
         {
-            return "name " + Name;
+            return "name " + Name;              // Возвращаем текстовое представление группы в формате "name Название"
         }
 
-        public int CompareTo(GroupData other)
+        public int CompareTo(GroupData other)           // Метод интерфейса IComparable для реализации правил сортировки списков групп по алфавиту
         {
-            if (Object.ReferenceEquals(other, null))
-            {
-                return 1;
+            if (Object.ReferenceEquals(other, null))    // Проверка: если объект сравнения отсутствует (null)
+            {       
+                return 1;                               // Текущий объект признается «большим» и при сортировке сдвигается в конец списка
             }
-            return Name.CompareTo(other.Name);
+            return Name.CompareTo(other.Name);          // Стандартное лексикографическое (алфавитное) сравнение строк названий двух групп
         }
 
-        public string Name { get; set; }                    // Публичное свойство для работы с полем name
-        
-        public string Header { get; set; }            // Публичное свойство для работы с полем header
-        
-        public string Footer { get; set; }                  // Публичное свойство для работы с полем footer
+        public string Name { get; set; }    // Публичное автоматическое свойство для работы с названием группы (поле name)
 
-        public string Id { get; set; }                  // Публичное свойство для работы с полем footer
+        public string Header { get; set; }  // Публичное автоматическое свойство для работы с заголовком группы (поле header)
+
+        public string Footer { get; set; }  // Публичное автоматическое свойство для работы с нижним колонтитулом группы (поле footer)
+
+        public string Id { get; set; }      // Публичное автоматическое свойство для хранения уникального идентификатора группы с сайта
     }
 }

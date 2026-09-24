@@ -48,34 +48,35 @@ namespace WebAddressbookTests                               // Простран�
             return this;                                        // Возвращаем ссылку на текущий объект хелпера
         }
 
-        public ContactHelper GetOrCreateContact(int index)                      // Метод обеспечения предусловия: получение существующего контакта или его автосоздание при отсутствии
+        public ContactHelper GetOrCreateContact(int index)              // Метод обеспечения предусловия: получение существующего контакта или его автосоздание при отсутствии
         {
-            if (!IsElementPresent(By.XPath                                      // Проверка: если в таблице по указанному смещенному индексу строки отсутствует чекбокс контакта
+            if (!IsElementPresent(By.XPath                              // Проверка: если в таблице по указанному смещенному индексу строки отсутствует чекбокс контакта
                 ("//table[@id='maintable']/tbody/tr" +
-                "[" + (index + 2) + "]/td/input")))                             // XPath-локатор чекбокса с инкрементом индекса для пропуска строки заголовков
+                "[" + (index + 2) + "]/td/input")))                     // XPath-локатор чекбокса с инкрементом индекса для пропуска строки заголовков
             {
-                ContactData contact = new ContactData("alex");                  // Создаем тестовые данные имени нового контакта на случай его отсутствия
-                contact.LastName = "chernenkov";                                // Задаем тестовую фамилию для создаваемого контакта
+                ContactData contact = new ContactData("alex");          // Создаем тестовые данные имени нового контакта на случай его отсутствия
+                contact.LastName = "chernenkov";                        // Задаем тестовую фамилию для создаваемого контакта
 
-                Create(contact);                                                // Вызываем метод создания контакта, чтобы наполнить таблицу данными
+                Create(contact);                                        // Вызываем метод создания контакта, чтобы наполнить таблицу данными
             }                                                     
-            return this;                                                        // Возвращаем ссылку на текущий объект хелпера
+            return this;                                                // Возвращаем ссылку на текущий объект хелпера
         }
 
-        public ContactHelper SelectContact(int index)                                   // Низкоуровневый метод выбора чекбокса контакта по порядковому номеру строки
+        public ContactHelper SelectContact(int index)                   // Низкоуровневый метод выбора чекбокса контакта по порядковому номеру строки
         {
-            driver.FindElement(By.XPath                                                 // Нахождение элемента чекбокса через динамический XPath, куда подставляется индекс строки
+            driver.FindElement(By.XPath                                 // Нахождение элемента чекбокса через динамический XPath, куда подставляется индекс строки
                 ("//table[@id='maintable']/tbody/tr" +
-                "[" + (index + 1) + "]/td/input")).Click();                             // Выполнение клика для отметки контакта галочкой
-            return this;                                                                // Возвращаем ссылку на текущий объект хелпера
+                "[" + (index + 1) + "]/td/input")).Click();             // Выполнение клика для отметки контакта галочкой
+            return this;                                                // Возвращаем ссылку на текущий объект хелпера
         }
 
-        public ContactHelper InitModifyCreation(int index)                              // Низкоуровневый метод открытия формы редактирования контакта через таблицу
+        public ContactHelper InitModifyCreation(int index)              // Низкоуровневый метод открытия формы редактирования контакта через таблицу
         {
-            driver.FindElement(By.XPath                                                 // Поиск картинки-иконки редактирования в 8-й ячейке указанной по индексу строки таблицы контактов
-                ("//table[@id='maintable']/tbody/tr[" + (index + 2) + "]/td[8]/a/img"))
-                .Click();                                                               // Клик по иконке для перехода к форме модификации
-            return this;                                                                // Возвращаем ссылку на текущий объект хелпера
+            driver.FindElement(By.XPath                                 // Поиск картинки-иконки редактирования в 8-й ячейке указанной по индексу строки таблицы контактов
+                ("//table[@id='maintable']/tbody/" +
+                "tr[" + (index + 2) + "]/td[8]/a/img"))
+                .Click();                                               // Клик по иконке для перехода к форме модификации
+            return this;                                                // Возвращаем ссылку на текущий объект хелпера
         }
 
         public ContactHelper FillContactForm(ContactData contact)   // Низкоуровневый метод заполнения полей формы создания/редактирования контакта
@@ -112,30 +113,36 @@ namespace WebAddressbookTests                               // Простран�
             return this;                                            // Возвращаем ссылку на текущий объект хелпера
         }
 
-        private List<ContactData> contactCache = null;
+        private List<ContactData> contactCache = null;              // Приватное поле для временного хранения списка контактов (кеша) в оперативной памяти
 
-        public List<ContactData> GetContactsList()
+        public List<ContactData> GetContactsList()                  // Высокоуровневый метод получения актуального списка контактов с поддержкой кеширования
         {
-            if (contactCache == null)
+            if (contactCache == null)                               // Проверка: если кеш пуст (это первый вызов или он был сброшен после удаления/создания/модификации)
             {
-                contactCache = new List<ContactData>();
-
+                contactCache = new List<ContactData>();             // Инициализируем новый пустой список контактов в памяти
+                                
                 ICollection<IWebElement> elements =
-                    driver.FindElements(By.CssSelector("tr[name=\"entry\"]"));
+                    driver.FindElements(By.CssSelector("tr[name=\"entry\"]"));  // Поиск всех строк таблицы веб-страницы, представляющих записи контактов (тег tr с атрибутом name="entry")
 
-                foreach (IWebElement element in elements)
-                {
-                    contactCache.Add(new ContactData(element.Text) {
-                        Id = element.FindElement(By.TagName("input")).GetAttribute("id")
+                foreach (IWebElement element in elements)           // Последовательный обход каждого найденного веб-элемента строки таблицы
+                {                    
+                    IList<IWebElement> cells = element.FindElements
+                        (By.TagName("td"));                             // Поиск всех ячеек (тегов td) внутри текущей строки таблицы для разделения данных
+
+                    contactCache.Add(new ContactData(cells[2].Text) {   // Создание объекта ContactData. В конструктор передается текст из 3-й ячейки (индекс 2), где обычно находится имя
+                        Id = element.FindElement(By.TagName("input")).  
+                        GetAttribute("id"),                             // Относительный поиск тега input внутри строки для извлечения уникального идентификатора контакта (атрибута id)
+                        LastName = cells[1].Text                        // Заполнение свойства LastName текстом из 2-й ячейки таблицы (индекс 1), где находится фамилия
                     });
                 }
             }
-            return new List<ContactData>(contactCache);
+            return new List<ContactData>(contactCache);             // Возвращаем безопасную поверхностную копию списка из кеша, изолируя внутреннее поле от внешних изменений
         }
 
-        public object? GetContactsCount()
+        public int GetContactsCount()                               // Высокоуровневый метод получения количества контактов в списке контактов
         {
-            return driver.FindElements(By.CssSelector("tr[name=\"entry\"]")).Count;
+            return driver.FindElements(By.CssSelector
+                ("tr[name=\"entry\"]")).Count;                      // Находим все строки контактов на странице по CSS-селектору и сразу возвращаем их общее количество (Count)
         }
     }
 }

@@ -115,31 +115,54 @@ namespace WebAddressbookTests                           // Пространст�
             return this;                                            // Возвращаем ссылку на текущий объект хелпера
         }
 
-        private List<GroupData> groupCache = null;
+        private List<GroupData> groupCache = null;      // Приватное поле для временного хранения списка групп (кеша) в оперативной памяти
 
-        public List<GroupData> GetGroupsList()
+        public List<GroupData> GetGroupsList()          // Высокоуровневый метод получения актуального списка групп с поддержкой кеширования
         {
-            if  (groupCache == null)
+            if  (groupCache == null)                    // Проверка: если кеш пуст (это первый вызов метода или он был сброшен после создания/изменения/удаления данных)
             {
-                groupCache = new List<GroupData>();
-                manager.Navigator.GoToGroupsPage();         // Переход на страницу со списком групп
+                groupCache = new List<GroupData>();     // Инициализируем новый пустой список групп в памяти для его последующего наполнения
+
+                manager.Navigator.GoToGroupsPage();     // Переходим на страницу со списком групп перед началом сбора элементов из веб-интерфейса
 
                 ICollection<IWebElement> elements =
-                    driver.FindElements(By.CssSelector("span.group"));
+                    driver.FindElements(By.CssSelector("span.group"));  // Поиск всех элементов тегов 'span', у которых атрибут 'class' имеет значение 'group' (каждый такой span представляет собой отдельную группу)
 
-                foreach (IWebElement element in elements)
+                foreach (IWebElement element in elements)               // Последовательный обход каждого найденного веб-элемента группы в цикле
                 {
-                    groupCache.Add(new GroupData(element.Text) {
-                        Id = element.FindElement(By.TagName("input")).GetAttribute("value")
+                    groupCache.Add(new GroupData(null) {                // Создание объекта GroupData на основе текста элемента и добавление его во внутренний кэш-список
+                        Id = element.FindElement(By.TagName("input"))
+                        .GetAttribute("value")                          // Относительный поиск тега input внутри текущего span для извлечения уникального идентификатора группы (значения HTML-атрибута 'value')  
                     });
                 }
+
+                string allGroupsNames = driver.FindElement
+                    (By.CssSelector("div#content form")).Text;          // Оптимизация получения имен: вместо долгого обращения к каждому элементу по отдельности, забираем весь видимый текст формы за один запрос
+
+                string[] parts = allGroupsNames.Split('\n');            // Разбиваем единую строку с именами групп на массив отдельных строк по символу переноса каретки (\n)
+
+                int shift = groupCache.Count - parts.Length;            // Расчет сдвига: вычисляем разницу между количеством найденных чекбоксов и строк текста (необходимо, если на форме есть системный текст до или после списка групп)
+
+                for (int i = 0; i < groupCache.Count; i++)              // Цикл синхронизации: сопоставляем прочитанные текстовые имена с ранее созданными в кэше объектами по индексам
+                {
+                    if (i < shift)                                      // Если текущий индекс попадает в зону сдвига (системные заголовки формы, у которых нет своего имени группы)
+                    {
+                        groupCache[i].Name = "";                        // Присваиваем группе пустое имя
+
+                    }
+                    else                                                // Для реальных строк с названиями групп
+                    {
+                        groupCache[i].Name = parts[i - shift].Trim();   // Записываем очищенное от лишних пробелов (Trim) имя из массива parts в соответствующий объект группы в кэше
+                    }
+                }
             }            
-            return new List<GroupData>(groupCache);
+            return new List<GroupData>(groupCache);                     // Возвращаем безопасную поверхностную копию списка из кеша, изолируя внутреннее поле от внешних изменений
         }
 
         public object? GetGroupsCount()
         {
-            return driver.FindElements(By.CssSelector("span.group")).Count;
+            return driver.FindElements
+                (By.CssSelector("span.group")).Count;                   // Быстрый подсчет: возвращает общее число найденных элементов-групп (span.group) на странице без парсинга их внутренних свойств
         }
     }
 }

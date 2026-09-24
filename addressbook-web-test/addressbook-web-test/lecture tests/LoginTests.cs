@@ -17,9 +17,9 @@ namespace WebAddressbookTests               // Пространство имен
 
             AccountData account = 
                 new AccountData("admin", "secret");         // Создаем объект с правильным именем пользователя и паролем
+            
             app.Auth.Login(account);                        // Вызываем метод авторизации хелпера и передаем туда валидные данные
 
-            // проверка
             Assert.IsTrue(app.Auth.IsLoggedIn(account));    // Проверяем, что метод IsLoggedIn вернул True, подтверждая успешный вход
         }
 
@@ -30,9 +30,9 @@ namespace WebAddressbookTests               // Пространство имен
 
             AccountData account = 
                 new AccountData("admin", "1236554");        // Создаем объект с правильным логином, но заведомо неверным паролем
+            
             app.Auth.Login(account);                        // Передаем невалидные данные в метод авторизации хелпера
             
-            // проверка
             Assert.IsFalse(app.Auth.IsLoggedIn(account));   // Проверяем, что метод IsLoggedIn вернул False, подтверждая, что вход выполнен не был
         }
     }

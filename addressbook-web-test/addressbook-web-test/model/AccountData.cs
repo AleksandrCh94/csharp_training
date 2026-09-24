@@ -6,37 +6,14 @@ namespace WebAddressbookTests                                   // Простр�
 {
     public class AccountData                                    // Класс-модель для хранения учетных данных пользователя (логин/пароль)
     {
-        private string username;                                // Приватное поле для скрытого хранения имени пользователя (логина)
-        private string password;                                // Приватное поле для скрытого хранения пароля
-
         public AccountData(string username, string password)    // Конструктор класса, принимающий два текстовых параметра
         {
-            this.username = username;                           // Записываем значение аргумента username в приватное поле username
-            this.password = password;                           // Записываем значение аргумента password в приватное поле password
+            Username = username;                           // Записываем переданный логин в автоматическое свойство Username
+            Password = password;                           // Записываем переданный пароль в автоматическое свойство Password
         }
 
-        public string Username                                  // Публичное свойство для безопасного доступа к приватному полю username
-        {
-            get                                                 // Блок чтения (вызывается, когда мы берем значение из свойства)
-            {
-                return username;                                // Возвращаем значение, скрытое в приватном поле username
-            }
-            set                                                 // Блок записи (вызывается, когда мы присваиваем значение свойству)
-            {
-                username = value;                               // Записываем переданное значение (value) в приватное поле username
-            }
-        }
+        public string Username { get; set; }    // Публичное автоматическое свойство для работы с логином (поле Username)
 
-        public string Password                                  // Публичное свойство для безопасного доступа к приватному полю password
-        {
-            get                                                 // Блок чтения (вызывается при чтении пароля)
-            {
-                return password;                                // Возвращаем значение, скрытое в приватном поле password
-            }
-            set                                                 // Блок записи (вызывается при изменении пароля)
-            {
-                password = value;                               // Записываем переданное значение (value) в приватное поле password
-            }
-        }
+        public string Password { get; set; }    // Публичное автоматическое свойство для работы с паролем (поле Password)
     }
 }
