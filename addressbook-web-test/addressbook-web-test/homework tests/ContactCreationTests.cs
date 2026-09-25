@@ -14,8 +14,7 @@ namespace WebAddressbookTests                           // Пространст�
         [Test]                                              // Атрибут NUnit: помечает метод как тест-кейс для проверки создания заполненного контакта
         public void ContactCreationTest()                   // Тест-кейс: успешное добавление контакта с именем и фамилией
         {
-            ContactData contact = new ContactData("alex");  // Создаем объект данных контакта и передаем обязательное имя
-            contact.LastName = "chernenkov";                // Заполняем поле фамилии создаваемого контакта
+            ContactData contact = new ContactData("alex", "che");  // Создаем объект данных контакта и передаем обязательное имя
             
             List<ContactData> oldContacts = 
                 app.Contacts.GetContactsList();         // Шаг 1: Считываем исходный список контактов с веб-страницы до выполнения операции создания
@@ -39,8 +38,7 @@ namespace WebAddressbookTests                           // Пространст�
         [Test]                                          // Атрибут NUnit: помечает метод как тест-кейс для проверки создания пустого контакта
         public void EmptyContactCreationTest()          // Тест-кейс: успешное добавление контакта с пустыми текстовыми полями
         {
-            ContactData contact = new ContactData("");  // Создаем объект данных контакта с пустой строкой вместо имени
-            contact.LastName = "";                      // Задаем пустое текстовое значение для фамилии контакта
+            ContactData contact = new ContactData("", "");  // Создаем объект данных контакта с пустой строкой вместо имени
 
             List<ContactData> oldContacts = 
                 app.Contacts.GetContactsList();         // Шаг 1: Считываем исходный список существующих контактов
@@ -64,8 +62,7 @@ namespace WebAddressbookTests                           // Пространст�
         [Test]                                          // Атрибут NUnit: помечает метод как тест-кейс для проверки создания пустого контакта
         public void BadNameContactCreationTest()        // Тест-кейс: успешное добавление контакта с пустыми текстовыми полями
         {
-            ContactData contact = new ContactData("a'a");   // Создаем объект данных контакта с пустой строкой вместо имени
-            contact.LastName = "";                          // Задаем пустое текстовое значение для фамилии контакта
+            ContactData contact = new ContactData("a'a", "");   // Создаем объект данных контакта с пустой строкой вместо имени
 
             List<ContactData> oldContacts = 
                 app.Contacts.GetContactsList();         // Шаг 1: Считываем исходный список контактов до отправки формы
@@ -84,6 +81,18 @@ namespace WebAddressbookTests                           // Пространст�
             newContacts.Sort();
 
             Assert.AreEqual(oldContacts, newContacts);  // Проверка 2 (Глубокая): Сравниваем списки и контролируем, что имя со спецсимволом без искажений сохранилось в базе данных и вывелось на интерфейс - ПРОПУСКАЕТСЯ
+        }
+
+        [Test]                                              // Атрибут NUnit: помечает метод как тест-кейс для проверки создания заполненного контакта
+        public void ContactInformationTest()                // Тест-кейс: успешное добавление контакта с именем и фамилией
+        {
+            ContactData fromTable = app.Contacts.GetContactInformationFromTable(0);
+            ContactData fromForm = app.Contacts.GetContactInformationFromForm(0);
+
+            Assert.AreEqual(fromTable, fromForm);
+            Assert.AreEqual(fromTable.Address, fromForm.Address);
+            Assert.AreEqual(fromTable.AllEmails, fromForm.AllEmails);
+            Assert.AreEqual(fromTable.AllPhones, fromForm.AllPhones);
         }
     }
 }

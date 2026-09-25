@@ -54,8 +54,7 @@ namespace WebAddressbookTests                               // Простран�
                 ("//table[@id='maintable']/tbody/tr" +
                 "[" + (index + 2) + "]/td/input")))                     // XPath-локатор чекбокса с инкрементом индекса для пропуска строки заголовков
             {
-                ContactData contact = new ContactData("alex");          // Создаем тестовые данные имени нового контакта на случай его отсутствия
-                contact.LastName = "chernenkov";                        // Задаем тестовую фамилию для создаваемого контакта
+                ContactData contact = new ContactData("alex", "che");   // Создаем тестовые данные имени нового контакта на случай его отсутствия
 
                 Create(contact);                                        // Вызываем метод создания контакта, чтобы наполнить таблицу данными
             }                                                     
@@ -76,6 +75,10 @@ namespace WebAddressbookTests                               // Простран�
                 ("//table[@id='maintable']/tbody/" +
                 "tr[" + (index + 2) + "]/td[8]/a/img"))
                 .Click();                                               // Клик по иконке для перехода к форме модификации
+            // из лекции 5.3
+            //driver.FindElements(By.Name("entry"))[index]
+            //    .FindElements(By.TagName("td"))[7]
+            //    .FindElement(By.TagName("a")).Click();
             return this;                                                // Возвращаем ссылку на текущий объект хелпера
         }
 
@@ -129,10 +132,9 @@ namespace WebAddressbookTests                               // Простран�
                     IList<IWebElement> cells = element.FindElements
                         (By.TagName("td"));                             // Поиск всех ячеек (тегов td) внутри текущей строки таблицы для разделения данных
 
-                    contactCache.Add(new ContactData(cells[2].Text) {   // Создание объекта ContactData. В конструктор передается текст из 3-й ячейки (индекс 2), где обычно находится имя
-                        Id = element.FindElement(By.TagName("input")).  
-                        GetAttribute("id"),                             // Относительный поиск тега input внутри строки для извлечения уникального идентификатора контакта (атрибута id)
-                        LastName = cells[1].Text                        // Заполнение свойства LastName текстом из 2-й ячейки таблицы (индекс 1), где находится фамилия
+                    contactCache.Add(new ContactData(cells[2].Text, cells[1].Text) {   // Создание объекта ContactData. В конструктор передается текст из 3-й ячейки (индекс 2), где обычно находится имя
+                        Id = element.FindElement(By.TagName("input"))
+                        .GetAttribute("id")                             // Относительный поиск тега input внутри строки для извлечения уникального идентификатора контакта (атрибута id)
                     });
                 }
             }
@@ -143,6 +145,60 @@ namespace WebAddressbookTests                               // Простран�
         {
             return driver.FindElements(By.CssSelector
                 ("tr[name=\"entry\"]")).Count;                      // Находим все строки контактов на странице по CSS-селектору и сразу возвращаем их общее количество (Count)
+        }
+
+        public ContactData GetContactInformationFromTable(int index)
+        {
+            manager.Navigator.GoToHomePage();
+            IList<IWebElement> cells = driver.FindElements(By.Name("entry"))[index]
+                .FindElements(By.TagName("td"));
+            string lastName = cells[1].Text;
+            string firstName = cells[2].Text;
+            string address = cells[3].Text;
+            string allEmails = cells[4].Text;
+            string allPhones = cells[5].Text;
+
+            return new ContactData(firstName, lastName)
+            {
+                Address = address,
+                AllEmails = allEmails,
+                AllPhones = allPhones
+            };
+        }
+
+        public ContactData GetContactInformationFromForm(int index)
+        {
+            manager.Navigator.GoToHomePage();
+            InitModifyCreation(index);
+
+            string firstName = driver.FindElement(By.Name("firstname")).GetAttribute("value");
+            string lastName = driver.FindElement(By.Name("lastname")).GetAttribute("value");
+            string address = driver.FindElement(By.Name("address")).GetAttribute("value");
+            string homePhone = driver.FindElement(By.Name("home")).GetAttribute("value");
+            string email = driver.FindElement(By.Name("email")).GetAttribute("value");
+            string email2 = driver.FindElement(By.Name("email2")).GetAttribute("value");
+            string email3 = driver.FindElement(By.Name("email3")).GetAttribute("value");
+            string mobilePhone = driver.FindElement(By.Name("mobile")).GetAttribute("value");
+            string workPhone = driver.FindElement(By.Name("work")).GetAttribute("value");
+
+            return new ContactData(firstName, lastName)
+            {
+                Address = address,
+                Email = email,
+                Email2 = email2,
+                Email3 = email3,
+                HomePhone = homePhone,
+                MobilePhone = mobilePhone,
+                WorkPhone = workPhone
+            };
+        }
+
+        public int GetNumberOfSearchResults()
+        {
+            manager.Navigator.GoToHomePage();
+            string text = driver.FindElement(By.TagName("label")).Text;
+            Match m = new Regex(@"\d").Match(text);
+            return Int32.Parse(m.Value);
         }
     }
 }

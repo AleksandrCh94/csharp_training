@@ -13,8 +13,7 @@ namespace WebAddressbookTests                               // Простран�
         [Test]                                                  // Атрибут NUnit: помечает метод как запускаемый автоматический тест-кейс
         public void ContactModificationTest()                   // Тест-кейс: проверка редактирования параметров существующего контакта
         {
-            ContactData newData = new ContactData("viktor");    // Создаем новый объект данных контакта и сразу задаем ему измененное имя
-            newData.LastName = "doom";                          // Задаем новое значение фамилии контакта
+            ContactData newData = new ContactData("viktor", "doom");    // Создаем новый объект данных контакта и сразу задаем ему измененное имя
 
             app.Contacts.GetOrCreateContact(0);             // Предусловие: Гарантируем наличие хотя бы одного контакта на первой позиции (индекс 0) — создаем его, если список пуст
 
