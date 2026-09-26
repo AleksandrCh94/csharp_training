@@ -71,14 +71,17 @@ namespace WebAddressbookTests                               // Простран�
 
         public ContactHelper InitModifyCreation(int index)              // Низкоуровневый метод открытия формы редактирования контакта через таблицу
         {
-            driver.FindElement(By.XPath                                 // Поиск картинки-иконки редактирования в 8-й ячейке указанной по индексу строки таблицы контактов
-                ("//table[@id='maintable']/tbody/" +
-                "tr[" + (index + 2) + "]/td[8]/a/img"))
-                .Click();                                               // Клик по иконке для перехода к форме модификации
-            // из лекции 5.3
-            //driver.FindElements(By.Name("entry"))[index]
-            //    .FindElements(By.TagName("td"))[7]
-            //    .FindElement(By.TagName("a")).Click();
+            driver.FindElements(By.Name("entry"))[index]                // Поиск картинки-иконки редактирования в 8-й ячейке указанной по индексу строки таблицы контактов
+                .FindElements(By.TagName("td"))[7]
+                .FindElement(By.TagName("a")).Click();                  // Клик по иконке для перехода к форме модификации
+            return this;                                                // Возвращаем ссылку на текущий объект хелпера
+        }
+
+        public ContactHelper InitShowContactDetails(int index)              // Низкоуровневый метод открытия формы редактирования контакта через таблицу
+        {
+            driver.FindElements(By.Name("entry"))[index]                // Поиск картинки-иконки редактирования в 8-й ячейке указанной по индексу строки таблицы контактов
+                .FindElements(By.TagName("td"))[6]
+                .FindElement(By.TagName("a")).Click();                  // Клик по иконке для перехода к форме модификации
             return this;                                                // Возвращаем ссылку на текущий объект хелпера
         }
 
@@ -175,11 +178,11 @@ namespace WebAddressbookTests                               // Простран�
             string lastName = driver.FindElement(By.Name("lastname")).GetAttribute("value");
             string address = driver.FindElement(By.Name("address")).GetAttribute("value");
             string homePhone = driver.FindElement(By.Name("home")).GetAttribute("value");
+            string mobilePhone = driver.FindElement(By.Name("mobile")).GetAttribute("value");
+            string workPhone = driver.FindElement(By.Name("work")).GetAttribute("value");
             string email = driver.FindElement(By.Name("email")).GetAttribute("value");
             string email2 = driver.FindElement(By.Name("email2")).GetAttribute("value");
             string email3 = driver.FindElement(By.Name("email3")).GetAttribute("value");
-            string mobilePhone = driver.FindElement(By.Name("mobile")).GetAttribute("value");
-            string workPhone = driver.FindElement(By.Name("work")).GetAttribute("value");
 
             return new ContactData(firstName, lastName)
             {
@@ -191,6 +194,35 @@ namespace WebAddressbookTests                               // Простран�
                 MobilePhone = mobilePhone,
                 WorkPhone = workPhone
             };
+        }
+
+        public string GetContactInformationFromFormInString(int index)
+        {
+            manager.Navigator.GoToHomePage();
+            InitModifyCreation(index);
+
+            List<string> infoList = new List<string>();
+
+            infoList.Add(driver.FindElement(By.Name("firstname")).GetAttribute("value"));
+            infoList.Add(driver.FindElement(By.Name("lastname")).GetAttribute("value"));
+            infoList.Add(driver.FindElement(By.Name("address")).GetAttribute("value"));
+            infoList.Add(driver.FindElement(By.Name("home")).GetAttribute("value"));
+            infoList.Add(driver.FindElement(By.Name("mobile")).GetAttribute("value"));
+            infoList.Add(driver.FindElement(By.Name("work")).GetAttribute("value"));
+            infoList.Add(driver.FindElement(By.Name("email")).GetAttribute("value"));
+            infoList.Add(driver.FindElement(By.Name("email2")).GetAttribute("value"));
+            infoList.Add(driver.FindElement(By.Name("email3")).GetAttribute("value"));
+
+            string info = string.Join("", infoList);
+            return Regex.Replace(info, "[ ]", "");
+        }
+
+        public string GetContactInformationFromDetails(int index)
+        {
+            manager.Navigator.GoToHomePage();
+            InitShowContactDetails(index);
+            string info = driver.FindElement(By.Id("content")).Text;
+            return Regex.Replace(info, "[ \r\nH:M]", "");
         }
 
         public int GetNumberOfSearchResults()

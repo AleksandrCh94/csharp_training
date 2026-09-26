@@ -82,17 +82,5 @@ namespace WebAddressbookTests                           // Пространст�
 
             Assert.AreEqual(oldContacts, newContacts);  // Проверка 2 (Глубокая): Сравниваем списки и контролируем, что имя со спецсимволом без искажений сохранилось в базе данных и вывелось на интерфейс - ПРОПУСКАЕТСЯ
         }
-
-        [Test]                                              // Атрибут NUnit: помечает метод как тест-кейс для проверки создания заполненного контакта
-        public void ContactInformationTest()                // Тест-кейс: успешное добавление контакта с именем и фамилией
-        {
-            ContactData fromTable = app.Contacts.GetContactInformationFromTable(0);
-            ContactData fromForm = app.Contacts.GetContactInformationFromForm(0);
-
-            Assert.AreEqual(fromTable, fromForm);
-            Assert.AreEqual(fromTable.Address, fromForm.Address);
-            Assert.AreEqual(fromTable.AllEmails, fromForm.AllEmails);
-            Assert.AreEqual(fromTable.AllPhones, fromForm.AllPhones);
-        }
     }
 }

@@ -54,6 +54,15 @@ namespace WebAddressbookTests                   // Пространство им
             }
         }
 
+        private string CleanUp(string phone)
+        {
+            if (phone == null || phone == "")
+            {
+                return "";
+            }
+            return Regex.Replace(phone, "[ ()-]", "") + "\r\n";
+        }
+
         public string AllEmails
         {
             get
@@ -71,15 +80,6 @@ namespace WebAddressbookTests                   // Пространство им
             {
                 allEmails = value;
             }
-        }
-
-        private string CleanUp(string phone)
-        {
-            if (phone == null || phone == "")
-            {
-                return "";           
-            }
-            return Regex.Replace(phone, "[ ()-]", "") + "\r\n";            
         }
 
         public string Id { get; set; }          // Публичное автоматическое свойство для хранения уникального ID контакта (из HTML-атрибута)
