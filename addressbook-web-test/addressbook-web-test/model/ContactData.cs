@@ -105,7 +105,8 @@ namespace WebAddressbookTests                   // Пространство им
 
         public override string ToString()                   // Переопределение метода преобразования объекта в строку (удобно для вывода логов в тестах при падении Assert)
         {
-            return $"{LastName} {FirstName}";               // Возвращаем контакт в удобном для чтения формате "Фамилия Имя" с помощью интерполяции строк
+            return "lastname= " + LastName
+                + "\nfirstname =" + FirstName;              // Возвращаем контакт в удобном для чтения формате "Фамилия Имя" с помощью интерполяции строк
         }
 
         public int CompareTo(ContactData other)             // Метод интерфейса IComparable для определения правил сортировки списка контактов

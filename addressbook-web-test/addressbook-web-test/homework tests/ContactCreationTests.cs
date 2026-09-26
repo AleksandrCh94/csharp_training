@@ -11,11 +11,28 @@ namespace WebAddressbookTests                           // Пространст�
     [TestFixture]                                       // Атрибут NUnit: помечает класс как набор автоматических тестов
     public class ContactCreationTests : AuthTestBase    // Объявление класса тестов создания контактов, унаследованного от AuthTestBase
     {
-        [Test]                                              // Атрибут NUnit: помечает метод как тест-кейс для проверки создания заполненного контакта
-        public void ContactCreationTest()                   // Тест-кейс: успешное добавление контакта с именем и фамилией
+        public static IEnumerable<ContactData> RandomContactDataProvider()
         {
-            ContactData contact = new ContactData("alex", "che");  // Создаем объект данных контакта и передаем обязательное имя
-            
+            List<ContactData> contacts = new List<ContactData>();
+            for (int i = 0; i < 5; i++)
+            {
+                contacts.Add(new ContactData(GenerateRandomString(10), GenerateRandomString(10))
+                {
+                    Address = (GenerateRandomString(20)),
+                    HomePhone = (GenerateRandomString(100)),
+                    MobilePhone = (GenerateRandomString(100)),
+                    WorkPhone = (GenerateRandomString(100)),
+                    Email = (GenerateRandomString(100)),
+                    Email2 = (GenerateRandomString(100)),
+                    Email3 = (GenerateRandomString(100))
+                });
+            }
+            return contacts;
+        }
+
+        [Test, TestCaseSource("RandomContactDataProvider")]       // Атрибут NUnit: помечает метод как тест-кейс для проверки создания заполненного контакта
+        public void ContactCreationTest(ContactData contact)      // Тест-кейс: успешное добавление контакта с именем и фамилией
+        {            
             List<ContactData> oldContacts = 
                 app.Contacts.GetContactsList();         // Шаг 1: Считываем исходный список контактов с веб-страницы до выполнения операции создания
 
@@ -33,30 +50,6 @@ namespace WebAddressbookTests                           // Пространст�
             newContacts.Sort();
             
             Assert.AreEqual(oldContacts, newContacts);  // Проверка 2 (Глубокая): Сравниваем старый дополненный список и новый список с сайта поэлементно
-        }
-
-        [Test]                                          // Атрибут NUnit: помечает метод как тест-кейс для проверки создания пустого контакта
-        public void EmptyContactCreationTest()          // Тест-кейс: успешное добавление контакта с пустыми текстовыми полями
-        {
-            ContactData contact = new ContactData("", "");  // Создаем объект данных контакта с пустой строкой вместо имени
-
-            List<ContactData> oldContacts = 
-                app.Contacts.GetContactsList();         // Шаг 1: Считываем исходный список существующих контактов
-
-            app.Contacts.Create(contact);               // Шаг 2: Передаем пустую модель контакта в хелпер для создания пустой записи в веб-интерфейсе
-
-            Assert.AreEqual(oldContacts.Count + 1, 
-                app.Contacts.GetContactsCount());       // Проверка 1 (Быстрая): Проверяем, что счетчик количества контактов в таблице на сайте увеличился на 1
-
-            List<ContactData> newContacts = 
-                app.Contacts.GetContactsList();         // Шаг 3: Считываем обновленный список контактов с веб-страницы после выполнения действия
-
-            oldContacts.Add(contact);                   // Локально добавляем пустой контакт в старый список для синхронизации объектов в памяти
-
-            oldContacts.Sort();                         // Сортируем списки для обеспечения идентичного порядка элементов перед сравнением
-            newContacts.Sort();
-
-            Assert.AreEqual(oldContacts, newContacts);  // Проверка 2 (Глубокая): Убеждаемся, что списки полностью совпадают и пустой контакт корректно отображается в DOM
         }
 
         [Test]                                          // Атрибут NUnit: помечает метод как тест-кейс для проверки создания пустого контакта

@@ -3,7 +3,8 @@ using System.Text;                          // Подключение подде
 using System.Text.RegularExpressions;       // Подключение классов для обработки регулярных выражений
 using System.Threading;                     // Подключение инструментов управления потоками и паузами
 using System.Collections.Generic;
-using NUnit.Framework;                      // Подключение фреймворка NUnit для выполнения тестов
+using NUnit.Framework;
+using OpenQA.Selenium.BiDi.Network;                      // Подключение фреймворка NUnit для выполнения тестов
 
 namespace WebAddressbookTests                       // Пространство имен для организации классов проекта
 {
@@ -11,13 +12,23 @@ namespace WebAddressbookTests                       // Пространство 
     [TestFixture]                                   // Атрибут NUnit: помечает класс как содержащий наборы тестов
     public class GroupCreationTests : AuthTestBase  // Объявление класса тестов создания групп, наследующего авторизацию из AuthTestBase
     {
-        [Test]                                      // Атрибут NUnit: помечает метод как тест-кейс для проверки создания заполненной группы
-        public void GroupCreationTest()             // Тест-кейс: успешное создание группы со всеми заполненными полями
+        public static IEnumerable<GroupData> RandomGroupDataProvider()
         {
-            GroupData group = new GroupData("aaad"); // Создаем объект группы и сразу задаем ей обязательное название
-            group.Header = "wegwg";                 // Заполняем поле заголовка (шапки) группы строкой
-            group.Footer = "wrwer";                 // Заполняем поле подвала (футера) группы строкой
+            List<GroupData> groups = new List<GroupData>();
+            for (int i = 0; i < 5; i++)
+            {
+                groups.Add(new GroupData(GenerateRandomString(30))
+                {
+                    Header = (GenerateRandomString(100)),
+                    Footer = (GenerateRandomString(100))
+                });
+            }
+            return groups;
+        }
 
+        [Test, TestCaseSource("RandomGroupDataProvider")]  // Атрибут NUnit: помечает метод как тест-кейс для проверки создания заполненной группы
+        public void GroupCreationTest(GroupData group)             // Тест-кейс: успешное создание группы со всеми заполненными полями
+        {          
             List<GroupData> oldGroups = 
                 app.Groups.GetGroupsList();         // Шаг 1: Считываем исходный список групп с веб-страницы до выполнения операции создания
 
@@ -35,32 +46,6 @@ namespace WebAddressbookTests                       // Пространство 
             newGroups.Sort();
 
             Assert.AreEqual(oldGroups, newGroups);  // Проверка 2 (Глубокая): Сравниваем старый дополненный список и новый список с сайта поэлементно (проверяются имена групп)
-        }
-
-        [Test]                                      // Атрибут NUnit: помечает метод как тест-кейс для проверки создания пустой группы
-        public void EmptyGroupCreationTest()        // Тест-кейс: успешное создание группы с пустыми строками во всех полях
-        {
-            GroupData group = new GroupData("");    // Создаем объект группы с пустым текстовым значением вместо названия
-            group.Header = "";                      // Задаем пустое текстовое значение для заголовка группы
-            group.Footer = "";                      // Задаем пустое текстовое значение для подвала группы
-
-            List<GroupData> oldGroups = 
-                app.Groups.GetGroupsList();         // Шаг 1: Считываем исходный список групп с сайта
-
-            app.Groups.Create(group);               // Шаг 2: Передаем пустую модель группы в хелпер для создания пустой записи в веб-интерфейсе
-
-            Assert.AreEqual(oldGroups.Count + 1, 
-                app.Groups.GetGroupsCount());       // Проверка 1 (Быстрая): Проверяем, что счетчик количества групп на сайте увеличился на 1
-
-            List<GroupData> newGroups = 
-                app.Groups.GetGroupsList();         // Шаг 3: Считываем обновленный список групп с сайта после выполнения действия
-
-            oldGroups.Add(group);                   // Локально добавляем пустую группу в старый список для синхронизации списков в памяти
-            
-            oldGroups.Sort();                       // Сортируем оба списка для идентичности порядка элементов перед сравнением
-            newGroups.Sort();
-
-            Assert.AreEqual(oldGroups, newGroups);  // Проверка 2 (Глубокая): Убеждаемся, что списки полностью идентичны и пустая группа корректно отображается в DOM
         }
 
         [Test]                                      // Атрибут NUnit: помечает метод как тест-кейс для проверки создания пустой группы

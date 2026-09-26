@@ -32,7 +32,9 @@ namespace WebAddressbookTests               // Пространство имен
 
         public override string ToString()       // Переопределение метода приведения к строке (используется NUnit для вывода понятных логов при падении тестов в Assert)
         {
-            return "name " + Name;              // Возвращаем текстовое представление группы в формате "name Название"
+            return "name= " + Name 
+                + "\nheader= " + Header 
+                + "\nfooter= " + Footer;        // Возвращаем текстовое представление всех свойств группы
         }
 
         public int CompareTo(GroupData other)           // Метод интерфейса IComparable для реализации правил сортировки списков групп по алфавиту
