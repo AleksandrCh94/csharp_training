@@ -27,7 +27,7 @@ namespace WebAddressbookTests                           // Пространст�
         public void DetailsAndForm_Match_Test()                // Тест-кейс: успешное добавление контакта с именем и фамилией
         {
             string fromForm = app.Contacts.GetContactInformationFromFormInString(0);
-            string fromDetails = app.Contacts.GetContactInformationFromDetails(0).Trim();
+            string fromDetails = app.Contacts.GetContactInformationFromDetails(0);
 
             Assert.AreEqual(fromDetails, fromForm);
         }

@@ -19,9 +19,9 @@ namespace WebAddressbookTests                           // Пространст�
                 contacts.Add(new ContactData(GenerateRandomString(10), GenerateRandomString(10))
                 {
                     Address = (GenerateRandomString(20)),
-                    HomePhone = (GenerateRandomString(100)),
-                    MobilePhone = (GenerateRandomString(100)),
-                    WorkPhone = (GenerateRandomString(100)),
+                    HomePhone = (GenerateRandomString(10)),
+                    MobilePhone = (GenerateRandomString(10)),
+                    WorkPhone = (GenerateRandomString(10)),
                     Email = (GenerateRandomString(100)),
                     Email2 = (GenerateRandomString(100)),
                     Email3 = (GenerateRandomString(100))

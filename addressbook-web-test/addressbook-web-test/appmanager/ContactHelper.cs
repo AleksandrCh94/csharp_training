@@ -201,20 +201,28 @@ namespace WebAddressbookTests                               // Простран�
             manager.Navigator.GoToHomePage();
             InitModifyCreation(index);
 
-            List<string> infoList = new List<string>();
+            List<string> list = new List<string>();
 
-            infoList.Add(driver.FindElement(By.Name("firstname")).GetAttribute("value"));
-            infoList.Add(driver.FindElement(By.Name("lastname")).GetAttribute("value"));
-            infoList.Add(driver.FindElement(By.Name("address")).GetAttribute("value"));
-            infoList.Add(driver.FindElement(By.Name("home")).GetAttribute("value"));
-            infoList.Add(driver.FindElement(By.Name("mobile")).GetAttribute("value"));
-            infoList.Add(driver.FindElement(By.Name("work")).GetAttribute("value"));
-            infoList.Add(driver.FindElement(By.Name("email")).GetAttribute("value"));
-            infoList.Add(driver.FindElement(By.Name("email2")).GetAttribute("value"));
-            infoList.Add(driver.FindElement(By.Name("email3")).GetAttribute("value"));
+            list.Add(driver.FindElement(By.Name("firstname")).GetAttribute("value"));
+            list.Add(driver.FindElement(By.Name("lastname")).GetAttribute("value"));
+            list.Add(driver.FindElement(By.Name("address")).GetAttribute("value"));
+            list.Add(driver.FindElement(By.Name("home")).GetAttribute("value"));
+            list.Add(driver.FindElement(By.Name("mobile")).GetAttribute("value"));
+            list.Add(driver.FindElement(By.Name("work")).GetAttribute("value"));
+            list.Add(driver.FindElement(By.Name("email")).GetAttribute("value"));
+            list.Add(driver.FindElement(By.Name("email2")).GetAttribute("value"));
+            list.Add(driver.FindElement(By.Name("email3")).GetAttribute("value"));
 
-            string info = string.Join("", infoList);
-            return Regex.Replace(info, "[ ]", "");
+            string info = $@"{list[0]} {list[1]}
+{list[2]}
+
+H: {list[3]}
+M: {list[4]}
+{list[5]}
+{list[6]}
+{list[7]}
+{list[8]}";
+            return info; //Regex.Replace(info, "[ ]", "");
         }
 
         public string GetContactInformationFromDetails(int index)
@@ -222,7 +230,7 @@ namespace WebAddressbookTests                               // Простран�
             manager.Navigator.GoToHomePage();
             InitShowContactDetails(index);
             string info = driver.FindElement(By.Id("content")).Text;
-            return Regex.Replace(info, "[ \r\nH:M]", "");
+            return info; //Regex.Replace(info, "[H:M]", "");
         }
 
         public int GetNumberOfSearchResults()
