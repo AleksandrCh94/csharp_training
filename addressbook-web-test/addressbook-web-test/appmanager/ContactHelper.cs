@@ -201,28 +201,75 @@ namespace WebAddressbookTests                               // Простран�
             manager.Navigator.GoToHomePage();
             InitModifyCreation(index);
 
-            List<string> list = new List<string>();
+            string firstName = driver.FindElement(By.Name("firstname")).GetAttribute("value");
+            string lastName = driver.FindElement(By.Name("lastname")).GetAttribute("value");
+            string address = driver.FindElement(By.Name("address")).GetAttribute("value");
+            string home = driver.FindElement(By.Name("home")).GetAttribute("value");
+            string mobile = driver.FindElement(By.Name("mobile")).GetAttribute("value");
+            string work = driver.FindElement(By.Name("work")).GetAttribute("value");
+            string email = driver.FindElement(By.Name("email")).GetAttribute("value");
+            string email2 = driver.FindElement(By.Name("email2")).GetAttribute("value");
+            string email3 = driver.FindElement(By.Name("email3")).GetAttribute("value");
 
-            list.Add(driver.FindElement(By.Name("firstname")).GetAttribute("value"));
-            list.Add(driver.FindElement(By.Name("lastname")).GetAttribute("value"));
-            list.Add(driver.FindElement(By.Name("address")).GetAttribute("value"));
-            list.Add(driver.FindElement(By.Name("home")).GetAttribute("value"));
-            list.Add(driver.FindElement(By.Name("mobile")).GetAttribute("value"));
-            list.Add(driver.FindElement(By.Name("work")).GetAttribute("value"));
-            list.Add(driver.FindElement(By.Name("email")).GetAttribute("value"));
-            list.Add(driver.FindElement(By.Name("email2")).GetAttribute("value"));
-            list.Add(driver.FindElement(By.Name("email3")).GetAttribute("value"));
+            // Вычисляем флаги наличия данных
+            bool hasPhones = !string.IsNullOrEmpty(home) || !string.IsNullOrEmpty(mobile) || !string.IsNullOrEmpty(work);
+            bool hasEmails = !string.IsNullOrEmpty(email) || !string.IsNullOrEmpty(email2) || !string.IsNullOrEmpty(email3);
+            bool hasName = !string.IsNullOrEmpty(firstName) || !string.IsNullOrEmpty(lastName);
+            bool hasAddress = !string.IsNullOrEmpty(address);
 
-            string info = $@"{list[0]} {list[1]}
-{list[2]}
+            // ЗАЩИТА: Если вообще ВСЕ поля пустые, сразу возвращаем пустую строку
+            if (!hasName && !hasAddress && !hasPhones && !hasEmails)
+            {
+                return "";
+            }
 
-H: {list[3]}
-M: {list[4]}
-{list[5]}
-{list[6]}
-{list[7]}
-{list[8]}";
-            return info; //Regex.Replace(info, "[ ]", "");
+            // БЛОК 3: Инициализация списка строк
+            List<string> lines = new List<string>();
+
+            // Добавляем Имя и Фамилию, только если они заполнены
+            if (hasName)
+            {
+                // Trim() уберет лишний пробел, если заполнено только имя или только фамилия
+                lines.Add($"{firstName} {lastName}".Trim());
+            }
+
+            // Если поле адреса в форме было заполнено, добавляем его в список следующей строкой
+            if (!string.IsNullOrEmpty(address))
+                lines.Add(address);
+                        
+            // Если ниже будут выводиться телефоны или email, принудительно вставляем 
+            // одну пустую строку (независимо от того, был ли заполнен сам адрес)
+            if (hasPhones || hasEmails)
+            {
+                lines.Add("");
+            }
+
+            // Проверяем каждый телефон отдельно. Если он есть — добавляем с нужным префиксом.
+            if (!string.IsNullOrEmpty(home))
+                lines.Add($"H: {home}");
+            if (!string.IsNullOrEmpty(mobile))
+                lines.Add($"M: {mobile}");
+            if (!string.IsNullOrEmpty(work))
+                lines.Add($"W: {work}");
+
+            // Проверяем каждое поле почты. Заполненные адреса добавляем в список как есть.
+            if (!string.IsNullOrEmpty(email))
+                lines.Add(email);
+            if (!string.IsNullOrEmpty(email2))
+                lines.Add(email2);
+            if (!string.IsNullOrEmpty(email3))
+                lines.Add(email3);
+
+            // Если в карточке одновременно присутствуют и телефоны, и электронные адреса,
+            // разделяем эти два блока еще одной пустой строкой
+            if (hasPhones && hasEmails)
+            {
+                lines.Add("");
+            }
+
+            // Объединяем все накопленные в списке строки в один большой текст.
+            // В качестве разделителя используем стандартный перенос строки Windows (\r\n).
+            return string.Join("\r\n", lines);
         }
 
         public string GetContactInformationFromDetails(int index)
