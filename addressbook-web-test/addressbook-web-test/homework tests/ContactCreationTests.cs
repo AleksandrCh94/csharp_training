@@ -1,9 +1,16 @@
-﻿using NUnit.Framework;                      // Подключение тестового фреймворка NUnit
-using System;                               // Подключение базовых системных типов .NET
-using System.Security.Cryptography;
-using System.Text;                          // Подключение поддержки работы с кодировками и строками
+﻿using System;                               // Подключение базовых типов и системных функций .NET
+using System.IO;
+using System.Text;                          // Подключение поддержки работы со строками и кодировками
 using System.Text.RegularExpressions;       // Подключение классов для обработки регулярных выражений
-using System.Threading;                     // Подключение инструментов для управления потоками и задержками
+using System.Threading;                     // Подключение инструментов управления потоками и паузами
+using System.Collections.Generic;
+using System.Xml;                      // Подключение фреймворка NUnit для выполнения тестов
+using System.Xml.Serialization;                      // Подключение фреймворка NUnit для выполнения тестов
+using Newtonsoft.Json;
+using Excel = Microsoft.Office.Interop.Excel;
+using NUnit.Framework;
+using OpenQA.Selenium.BiDi.Network;
+
 
 namespace WebAddressbookTests                           // Пространство имен для логической группировки классов проекта
 {
@@ -30,7 +37,20 @@ namespace WebAddressbookTests                           // Пространст�
             return contacts;
         }
 
-        [Test, TestCaseSource("RandomContactDataProvider")]       // Атрибут NUnit: помечает метод как тест-кейс для проверки создания заполненного контакта
+        public static IEnumerable<ContactData> ContactDataFromXmlFile()
+        {
+            return (List<ContactData>)
+                new XmlSerializer(typeof(List<ContactData>))
+                    .Deserialize(new StreamReader(@"contacts.xml"));
+        }
+
+        public static IEnumerable<ContactData> ContactDataFromJsonFile()
+        {
+            return JsonConvert.DeserializeObject<List<ContactData>>(
+                File.ReadAllText(@"contacts.json"));
+        }
+
+        [Test, TestCaseSource("ContactDataFromJsonFile")]       // Атрибут NUnit: помечает метод как тест-кейс для проверки создания заполненного контакта
         public void ContactCreationTest(ContactData contact)      // Тест-кейс: успешное добавление контакта с именем и фамилией
         {            
             List<ContactData> oldContacts = 

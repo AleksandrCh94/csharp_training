@@ -11,6 +11,10 @@ namespace WebAddressbookTests                   // Пространство им
         private string allPhones;
         private string allEmails;
 
+        public ContactData()    // Конструктор класса без параметров
+        {
+        }
+
         public ContactData(string firstname, string lastname)    // Конструктор класса, требующий обязательное указание имени контакта
         {
             FirstName = firstname;              // Сохраняем переданное в конструктор значение в свойство FirstName

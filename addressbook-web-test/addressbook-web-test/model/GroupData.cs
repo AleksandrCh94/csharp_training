@@ -6,7 +6,11 @@ namespace WebAddressbookTests               // Пространство имен
 {
     public class GroupData : IEquatable<GroupData>, 
         IComparable<GroupData>              // Класс-модель, описывающий сущность "Группа контактов"
-    {       
+    {
+        public GroupData()                  // Конструктор класса без параметров
+        {
+        }
+
         public GroupData(string name)       // Конструктор класса, требующий название группы при её создании
         {
             Name = name;                    // Записываем переданное имя в автоматическое свойство Name
