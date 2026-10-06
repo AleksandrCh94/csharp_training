@@ -234,37 +234,35 @@ namespace WebAddressbookTests                               // Простран�
             }
 
             // Если поле адреса в форме было заполнено, добавляем его в список следующей строкой
-            if (!string.IsNullOrEmpty(address))
+            if (hasAddress)
                 lines.Add(address);
-                        
-            // Если ниже будут выводиться телефоны или email, принудительно вставляем 
-            // одну пустую строку (независимо от того, был ли заполнен сам адрес)
-            if (hasPhones || hasEmails)
+
+            if (hasPhones)
             {
-                lines.Add("");
+                // Если выше (в блоке имени или адреса) уже что-то было добавлено, 
+                // делаем отступ перед блоком телефонов
+                if (lines.Count > 0)
+                {
+                    lines.Add("");
+                }
+
+                if (!string.IsNullOrEmpty(home))   lines.Add($"H: {home}");
+                if (!string.IsNullOrEmpty(mobile)) lines.Add($"M: {mobile}");
+                if (!string.IsNullOrEmpty(work))   lines.Add($"W: {work}");
             }
 
-            // Проверяем каждый телефон отдельно. Если он есть — добавляем с нужным префиксом.
-            if (!string.IsNullOrEmpty(home))
-                lines.Add($"H: {home}");
-            if (!string.IsNullOrEmpty(mobile))
-                lines.Add($"M: {mobile}");
-            if (!string.IsNullOrEmpty(work))
-                lines.Add($"W: {work}");
-
-            // Проверяем каждое поле почты. Заполненные адреса добавляем в список как есть.
-            if (!string.IsNullOrEmpty(email))
-                lines.Add(email);
-            if (!string.IsNullOrEmpty(email2))
-                lines.Add(email2);
-            if (!string.IsNullOrEmpty(email3))
-                lines.Add(email3);
-
-            // Если в карточке одновременно присутствуют и телефоны, и электронные адреса,
-            // разделяем эти два блока еще одной пустой строкой
-            if (hasPhones && hasEmails)
+            if (hasEmails)
             {
-                lines.Add("");
+                // Если выше (в блоках имени, адреса или телефонов) уже есть данные,
+                // делаем отступ перед блоком email
+                if (lines.Count > 0)
+                {
+                    lines.Add("");
+                }
+
+                if (!string.IsNullOrEmpty(email)) lines.Add(email);
+                if (!string.IsNullOrEmpty(email2)) lines.Add(email2);
+                if (!string.IsNullOrEmpty(email3)) lines.Add(email3);
             }
 
             // Объединяем все накопленные в списке строки в один большой текст.

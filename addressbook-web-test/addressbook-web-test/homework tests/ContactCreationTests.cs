@@ -50,7 +50,7 @@ namespace WebAddressbookTests                           // Пространст�
                 File.ReadAllText(@"contacts.json"));
         }
 
-        [Test, TestCaseSource("ContactDataFromJsonFile")]       // Атрибут NUnit: помечает метод как тест-кейс для проверки создания заполненного контакта
+        [Test, TestCaseSource("ContactDataFromXmlFile")]       // Атрибут NUnit: помечает метод как тест-кейс для проверки создания заполненного контакта
         public void ContactCreationTest(ContactData contact)      // Тест-кейс: успешное добавление контакта с именем и фамилией
         {            
             List<ContactData> oldContacts = 

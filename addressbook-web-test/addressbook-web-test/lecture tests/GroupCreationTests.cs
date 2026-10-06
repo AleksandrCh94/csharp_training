@@ -85,7 +85,7 @@ namespace WebAddressbookTests                       // Пространство 
             return groups;
         }
 
-        [Test, TestCaseSource("GroupDataFromExcelFile")]  // Атрибут NUnit: помечает метод как тест-кейс для проверки создания заполненной группы
+        [Test, TestCaseSource("GroupDataFromJsonFile")]  // Атрибут NUnit: помечает метод как тест-кейс для проверки создания заполненной группы
         public void GroupCreationTest(GroupData group)   // Тест-кейс: успешное создание группы со всеми заполненными полями
         {          
             List<GroupData> oldGroups = 
