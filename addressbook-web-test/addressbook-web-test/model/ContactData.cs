@@ -2,9 +2,11 @@
 using System.Collections.Generic;               // Подключение инструментов для работы со списками
 using System.Text;                              // Подключение инструментов для работы с текстом
 using System.Text.RegularExpressions;
+using LinqToDB.Mapping;
 
 namespace WebAddressbookTests                   // Пространство имен проекта адресной книги
 {
+    [Table(Name = "addressbook")]
     public class ContactData : IEquatable<ContactData>, 
         IComparable<ContactData>                // Класс-модель, представляющий структуру данных одного контакта на сайте
     {
@@ -21,8 +23,13 @@ namespace WebAddressbookTests                   // Пространство им
             LastName = lastname;
         }
 
+        [Column(Name = "id"), PrimaryKey]
+        public string Id { get; set; }          // Публичное автоматическое свойство для хранения уникального ID контакта (из HTML-атрибута)
+
+        [Column(Name = "firstname")]
         public string FirstName { get; set; }   // Публичное автоматическое свойство для хранения Имени контакта
 
+        [Column(Name = "lastname")]
         public string LastName { get; set; }    // Публичное автоматическое свойство для хранения Фамилии контакта
 
         public string Address { get; set; }    // Публичное автоматическое свойство для хранения Адреса контакта
@@ -38,6 +45,9 @@ namespace WebAddressbookTests                   // Пространство им
         public string Email2 { get; set; }    // Публичное автоматическое свойство для хранения Рабочего телефона контакта
 
         public string Email3 { get; set; }    // Публичное автоматическое свойство для хранения Рабочего телефона контакта
+
+        [Column(Name = "deprecated")]
+        public string Deprecated { get; set; }
 
         public string AllPhones
         {
@@ -86,8 +96,6 @@ namespace WebAddressbookTests                   // Пространство им
             }
         }
 
-        public string Id { get; set; }          // Публичное автоматическое свойство для хранения уникального ID контакта (из HTML-атрибута)
-
         public bool Equals(ContactData other)           // Метод интерфейса IEquatable для сравнения текущего контакта с другим объектом ContactData
         {
             if (Object.ReferenceEquals(other, null))    // Проверка: если переданный объект равен null
@@ -129,6 +137,14 @@ namespace WebAddressbookTests                   // Пространство им
                     StringComparison.OrdinalIgnoreCase);            // Сравниваем имена, также без учета регистра букв
             }
             return compare;                                         // Возвращаем результат: меньше 0 (текущий объект идет раньше), 0 (равны), больше 0 (текущий идет позже)
+        }
+
+        public static List<ContactData> GetAll()
+        {
+            using (AddressBookDB db = new AddressBookDB())
+            {
+                return (from c in db.Contacts.Where(x => x.Deprecated == "0000-00-00 00:00:00") select c).ToList();
+            }
         }
     }
 }

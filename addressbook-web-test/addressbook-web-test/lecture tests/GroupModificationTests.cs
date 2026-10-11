@@ -8,7 +8,7 @@ namespace WebAddressbookTests                           // Пространст�
 {
     [NonParallelizable]                                 // Атрибут NUnit: запускает тесты этого класса последовательно, запрещая параллелизацию
     [TestFixture]                                       // Атрибут NUnit: регистрирует этот класс в Обозревателе тестов как тестовый набор
-    public class GroupModificationTests : AuthTestBase  // Объявление тестового класса, автоматически выполняющего вход в систему через AuthTestBase
+    public class GroupModificationTests : GroupTestBase  // Объявление тестового класса, автоматически выполняющего вход в систему через AuthTestBase
     {
         [Test]                                          // Атрибут NUnit: помечает метод как запускаемый автоматический тест-кейс
         public void GroupModificationTest()             // Тест-кейс: проверка редактирования параметров существующей группы
@@ -19,18 +19,16 @@ namespace WebAddressbookTests                           // Пространст�
 
             app.Groups.GetOrCreateGroup(0);             // Предусловие: Гарантируем наличие хотя бы одной группы на первой позиции (индекс 0) — создаем её, если список пуст
 
-            List<GroupData> oldGroups = 
-                app.Groups.GetGroupsList();             // Шаг 1: Получаем исходный список групп с сайта до выполнения модификации
+            List<GroupData> oldGroups = GroupData.GetAll();             // Шаг 1: Получаем исходный список групп с сайта до выполнения модификации
             
             GroupData oldData = oldGroups[0];           // Сохраняем во временную переменную старые данные модифицируемой группы (чтобы запомнить её уникальный Id)
 
-            app.Groups.Modify(0, newData);              // Шаг 2: Вызываем хелпер групп и передаем команду изменить самую первую группу (индекс 0), применив новые данные newData
+            app.Groups.Modify(oldData, newData);        // Шаг 2: Вызываем хелпер групп и передаем команду изменить самую первую группу (индекс 0), применив новые данные newData
 
             Assert.AreEqual(oldGroups.Count, 
                 app.Groups.GetGroupsCount());           // Проверка 1 (Быстрая): Убеждаемся, что общее количество групп на странице (GetGroupsCount) осталось прежним
 
-            List<GroupData> newGroups = 
-                app.Groups.GetGroupsList();             // Шаг 3: Получаем новый, обновленный список групп с веб-страницы после модификации
+            List<GroupData> newGroups = GroupData.GetAll();             // Шаг 3: Получаем новый, обновленный список групп с веб-страницы после модификации
             
             oldGroups[0].Name = newData.Name;           // Моделируем изменение имени локально в нашем старом списке в оперативной памяти для первой группы
             

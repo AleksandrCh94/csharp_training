@@ -9,23 +9,22 @@ namespace WebAddressbookTests                       // Пространство 
 {
     [NonParallelizable]                             // Атрибут NUnit: указывает запускать тесты этого класса строго последовательно
     [TestFixture]                                   // Атрибут NUnit: помечает класс как набор автоматических тестов
-    public class GroupRemovalTests : AuthTestBase   // Объявление тестового класса, наследующего автоматический логин из AuthTestBase
+    public class GroupRemovalTests : GroupTestBase   // Объявление тестового класса, наследующего автоматический логин из AuthTestBase
     {
         [Test]                                      // Атрибут NUnit: помечает метод как отдельный выполняемый тест-кейс
         public void GroupRemovalTest()              // Тест-кейс: проверка удаления существующей группы
         {
-            List<GroupData> oldGroups = app.Groups.GetGroupsList(); // Шаг 1: Получаем исходный список групп с сайта до выполнения удаления
+            List<GroupData> oldGroups = GroupData.GetAll(); // Шаг 1: Получаем исходный список групп с сайта до выполнения удаления
+            GroupData toBeRemoved = oldGroups[0];
 
             app.Groups.GetOrCreateGroup(0);         // Предусловие: Гарантируем наличие хотя бы одной группы на первой позиции (индекс 0) — создаем её, если список пуст
-            
-            app.Groups.Remove(0);                   // Шаг 2: Вызываем метод хелпера групп для удаления самой первой группы (по порядковому индексу 0)
+
+            app.Groups.Remove(toBeRemoved);                   // Шаг 2: Вызываем метод хелпера групп для удаления самой первой группы (по порядковому индексу 0)
 
             Assert.AreEqual(oldGroups.Count - 1, 
                 app.Groups.GetGroupsCount());       // Проверка 1 (Быстрая): Убеждаемся, что текущее количество строк на странице (GetGroupsCount) ровно на 1 меньше, чем было изначально
 
-            List<GroupData> newGroups = app.Groups.GetGroupsList(); // Шаг 3: Получаем новый, обновленный список групп с веб-страницы после удаления
-
-            GroupData toBeRemoved = oldGroups[0];   // Запоминаем объект группы, которую мы намеревались удалить (самую первую из исходного списка)
+            List<GroupData> newGroups = GroupData.GetAll(); // Шаг 3: Получаем новый, обновленный список групп с веб-страницы после удаления
             
             oldGroups.RemoveAt(0);                  // Моделируем удаление этой же группы локально в нашем старом списке в оперативной памяти
             

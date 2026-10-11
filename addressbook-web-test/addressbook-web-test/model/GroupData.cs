@@ -1,9 +1,11 @@
 ﻿using System;                               // Подключение основных системных компонентов .NET
 using System.Collections.Generic;           // Подключение поддержки работы с коллекциями данных
 using System.Text;                          // Подключение поддержки обработки текстовых строк
+using LinqToDB.Mapping;
 
 namespace WebAddressbookTests               // Пространство имен проекта
 {
+    [Table(Name = "group_list")]
     public class GroupData : IEquatable<GroupData>, 
         IComparable<GroupData>              // Класс-модель, описывающий сущность "Группа контактов"
     {
@@ -50,12 +52,36 @@ namespace WebAddressbookTests               // Пространство имен
             return Name.CompareTo(other.Name);          // Стандартное лексикографическое (алфавитное) сравнение строк названий двух групп
         }
 
+        [Column(Name = "group_name")]
         public string Name { get; set; }    // Публичное автоматическое свойство для работы с названием группы (поле name)
 
+        [Column(Name = "group_header")]
         public string Header { get; set; }  // Публичное автоматическое свойство для работы с заголовком группы (поле header)
 
+        [Column(Name = "group_footer")]
         public string Footer { get; set; }  // Публичное автоматическое свойство для работы с нижним колонтитулом группы (поле footer)
 
+        [Column(Name = "group_id"), PrimaryKey, Identity]
         public string Id { get; set; }      // Публичное автоматическое свойство для хранения уникального идентификатора группы с сайта
+    
+        public static List<GroupData> GetAll()
+        {
+            using (AddressBookDB db = new AddressBookDB())
+            {
+                return (from g in db.Groups select g).ToList();
+            }    
+        }
+
+        public List<ContactData> GetContacts()
+        {
+            using (AddressBookDB db = new AddressBookDB())
+            {
+                return (from c in db.Contacts
+                            from gcr in db.GCR.Where(p => p.GroupId == Id 
+                            && p.ContactId == Id 
+                            && c.Deprecated == "0000-00-00 00:00:00")
+                            select c).Distinct().ToList();
+            }
+        }
     }
 }

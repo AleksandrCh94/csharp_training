@@ -34,13 +34,33 @@ namespace WebAddressbookTests                           // Пространст�
             FillGroupForm(newData);                             // Перезаполнение полей формы новыми текстовыми данными
             SubmitGroupModification();                          // Подтверждение изменений нажатием кнопки обновления данных
             ReturnToGroupsPage();                               // Возврат на страницу со списком групп для завершения операции
-            return this;                                            // Возвращаем ссылку на текущий объект для вызова методов по цепочке
+            return this;                                        // Возвращаем ссылку на текущий объект для вызова методов по цепочке
+        }
+
+        public GroupHelper Modify(GroupData oldData, GroupData newData)
+        {
+            manager.Navigator.GoToGroupsPage();                 // Переход на страницу со списком групп перед началом изменений
+            SelectGroup(oldData.Id);                            // Выбор чекбокса нужной группы в списке
+            InitGroupModification();                            // Нажатие кнопки редактирования выбранной группы
+            FillGroupForm(newData);                             // Перезаполнение полей формы новыми текстовыми данными
+            SubmitGroupModification();                          // Подтверждение изменений нажатием кнопки обновления данных
+            ReturnToGroupsPage();                               // Возврат на страницу со списком групп для завершения операции
+            return this;                                        // Возвращаем ссылку на текущий объект для вызова методов по цепочке
         }
 
         public GroupHelper Remove(int index)    // Высокоуровневый метод для удаления группы по её индексу
         {
             manager.Navigator.GoToGroupsPage(); // Переход на страницу со списком групп
             SelectGroup(index);                 // Выбор чекбокса удаляемой группы
+            RemoveGroup();                      // Нажатие управляющей кнопки удаления групп
+            ReturnToGroupsPage();               // Возврат на страницу списка групп для обновления интерфейса
+            return this;                        // Возвращаем ссылку на текущий объект хелпера
+        }
+
+        public GroupHelper Remove(GroupData group)
+        {
+            manager.Navigator.GoToGroupsPage(); // Переход на страницу со списком групп
+            SelectGroup(group.Id);              // Выбор чекбокса удаляемой группы
             RemoveGroup();                      // Нажатие управляющей кнопки удаления групп
             ReturnToGroupsPage();               // Возврат на страницу списка групп для обновления интерфейса
             return this;                        // Возвращаем ссылку на текущий объект хелпера
@@ -71,6 +91,14 @@ namespace WebAddressbookTests                           // Пространст�
         {
             driver.FindElement(By.XPath
                 ("//span[" + (index + 1) + "]/input")).Click(); // Поиск инпута внутри тега span по динамическому XPath-индексу и клик для выбора
+            return this;                                        // Возвращаем ссылку на текущий объект хелпера
+        }
+
+        public GroupHelper SelectGroup(string id)               // Низкоуровневый метод выбора чекбокса группы по её номеру в списке
+        {
+            driver.FindElement(By.XPath
+                ("(//input[@name='selected[]' and @value= '" + id + "'])"))
+                    .Click(); // Поиск инпута внутри тега span по динамическому XPath-индексу и клик для выбора
             return this;                                        // Возвращаем ссылку на текущий объект хелпера
         }
 

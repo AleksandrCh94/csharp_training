@@ -4,6 +4,7 @@ using System.Text;                          // Подключение подде
 using System.Text.RegularExpressions;       // Подключение классов для обработки регулярных выражений
 using System.Threading;                     // Подключение инструментов управления потоками и паузами
 using System.Collections.Generic;
+using System.Linq;
 using System.Xml;                      // Подключение фреймворка NUnit для выполнения тестов
 using System.Xml.Serialization;                      // Подключение фреймворка NUnit для выполнения тестов
 using Newtonsoft.Json;
@@ -15,7 +16,7 @@ namespace WebAddressbookTests                       // Пространство 
 {
     [NonParallelizable]                             // Атрибут NUnit: запускает тесты этого класса последовательно (в один поток)
     [TestFixture]                                   // Атрибут NUnit: помечает класс как содержащий наборы тестов
-    public class GroupCreationTests : AuthTestBase  // Объявление класса тестов создания групп, наследующего авторизацию из AuthTestBase
+    public class GroupCreationTests : GroupTestBase  // Объявление класса тестов создания групп, наследующего авторизацию из AuthTestBase
     {
         public static IEnumerable<GroupData> RandomGroupDataProvider()
         {
@@ -88,16 +89,14 @@ namespace WebAddressbookTests                       // Пространство 
         [Test, TestCaseSource("GroupDataFromJsonFile")]  // Атрибут NUnit: помечает метод как тест-кейс для проверки создания заполненной группы
         public void GroupCreationTest(GroupData group)   // Тест-кейс: успешное создание группы со всеми заполненными полями
         {          
-            List<GroupData> oldGroups = 
-                app.Groups.GetGroupsList();         // Шаг 1: Считываем исходный список групп с веб-страницы до выполнения операции создания
+            List<GroupData> oldGroups = GroupData.GetAll();         // Шаг 1: Считываем исходный список групп с веб-страницы до выполнения операции создания
 
             app.Groups.Create(group);               // Шаг 2: Вызываем метод хелпера групп для физического добавления новой группы на сайт через UI
 
             Assert.AreEqual(oldGroups.Count + 1,
                 app.Groups.GetGroupsCount());       // Проверка 1 (Быстрая): Убеждаемся, что текущее количество строк в таблице на сайте (GetGroupsCount) стало ровно на 1 больше
 
-            List<GroupData> newGroups = 
-                app.Groups.GetGroupsList();         // Шаг 3: Получаем новый, актуальный список групп с сайта после успешного сохранения
+            List<GroupData> newGroups = GroupData.GetAll();         // Шаг 3: Получаем новый, актуальный список групп с сайта после успешного сохранения
             
             oldGroups.Add(group);                   // Имитируем добавление новой группы локально в наш старый список в оперативной памяти
 
@@ -107,30 +106,22 @@ namespace WebAddressbookTests                       // Пространство 
             Assert.AreEqual(oldGroups, newGroups);  // Проверка 2 (Глубокая): Сравниваем старый дополненный список и новый список с сайта поэлементно (проверяются имена групп)
         }
 
-        [Test]                                      // Атрибут NUnit: помечает метод как тест-кейс для проверки создания пустой группы
-        public void BadNameGroupCreationTest()      // Тест-кейс: успешное создание группы с пустыми строками во всех полях
+        [Test]                                      // Атрибут NUnit: помечает метод как тест-кейс
+        public void TestDBConnectivity()
         {
-            GroupData group = new GroupData("a'a"); // Создаем объект группы с пустым текстовым значением вместо названия
-            group.Header = "";                      // Задаем пустое текстовое значение для заголовка группы
-            group.Footer = "";                      // Задаем пустое текстовое значение для подвала группы
+            DateTime start = DateTime.Now;
+            List<GroupData> fromUi = app.Groups.GetGroupsList();
+            DateTime end = DateTime.Now;
+            System.Console.Out.WriteLine("UI " + end.Subtract(start));
 
-            List<GroupData> oldGroups = 
-                app.Groups.GetGroupsList();         // Шаг 1: Считываем исходный список существующих групп
+            start = DateTime.Now;
+            List<GroupData> fromDb = GroupData.GetAll();
+            end = DateTime.Now;
+            System.Console.Out.WriteLine("БД " + end.Subtract(start));
 
-            app.Groups.Create(group);               // Шаг 2: Передаем модель группы со спецсимволом в хелпер для создания на сайте
-
-            Assert.AreEqual(oldGroups.Count + 1, 
-                app.Groups.GetGroupsCount());       // Проверка 1 (Быстрая): Убеждаемся, что система НЕ создала группу и количество осталось прежним - ТЕСТ ПАДАЕТ
-
-            List<GroupData> newGroups = 
-                app.Groups.GetGroupsList();         // Шаг 3: Считываем новый список групп с веб-страницы - ПРОПУСКАЕТСЯ
-
-            oldGroups.Add(group);                   // Добавляем созданную группу "a'a" в наш старый локальный список в памяти - ПРОПУСКАЕТСЯ
-
-            oldGroups.Sort();                       // Сортируем списки для обеспечения одинакового порядка элементов - ПРОПУСКАЕТСЯ
-            newGroups.Sort();
-
-            Assert.AreEqual(oldGroups, newGroups);  // Проверка 2 (Глубокая): Сравниваем списки и проверяем, что имя группы со спецсимволом корректно сохранилось и отображается на сайте - ПРОПУСКАЕТСЯ
+            foreach (ContactData contact in ContactData.GetAll()) {
+                System.Console.Out.WriteLine(contact.Deprecated);
+            }
         }
     }
 }

@@ -34,9 +34,26 @@ namespace WebAddressbookTests                               // Простран�
             return this;                                            // Возвращаем ссылку на текущий объект для вызова методов по цепочке
         }
 
+        public ContactHelper Modify(ContactData oldData, ContactData newData) // Высокоуровневый метод для редактирования контакта по его индексу в таблице
+        {
+            InitModifyCreation(oldData.Id);                              // Открытие формы редактирования конкретного контакта нажатием на иконку карандаша
+            FillContactForm(newData);                               // Перезаполнение формы новыми переданными текстовыми данными
+            SubmitContactModification();                            // Подтверждение изменений нажатием кнопки обновления данных
+            ReturnToHomePage();                                     // Возврат на главную страницу сайта к общему списку
+            return this;                                            // Возвращаем ссылку на текущий объект для вызова методов по цепочке
+        }
+
         public ContactHelper Remove(int index)  // Высокоуровневый метод для удаления контакта по его индексу в таблице
         {
             SelectContact(index);               // Установка чекбокса выбора напротив нужного контакта в строке таблицы
+            RemoveContact();                    // Нажатие кнопки удаления контактов на панели управления
+            ReturnToHomePage();                 // Возврат на главную страницу для обновления списка
+            return this;                        // Возвращаем ссылку на текущий объект хелпера
+        }
+
+        public ContactHelper Remove(ContactData contact)  // Высокоуровневый метод для удаления контакта по его индексу в таблице
+        {
+            SelectContact(contact.Id);               // Установка чекбокса выбора напротив нужного контакта в строке таблицы
             RemoveContact();                    // Нажатие кнопки удаления контактов на панели управления
             ReturnToHomePage();                 // Возврат на главную страницу для обновления списка
             return this;                        // Возвращаем ссылку на текущий объект хелпера
@@ -63,9 +80,7 @@ namespace WebAddressbookTests                               // Простран�
 
         public ContactHelper SelectContact(int index)                   // Низкоуровневый метод выбора чекбокса контакта по порядковому номеру строки
         {
-            driver.FindElement(By.XPath                                 // Нахождение элемента чекбокса через динамический XPath, куда подставляется индекс строки
-                ("//table[@id='maintable']/tbody/tr" +
-                "[" + (index + 1) + "]/td/input")).Click();             // Выполнение клика для отметки контакта галочкой
+            driver.FindElement(By.XPath(@"tr[index]/td/input")).Click();             // Выполнение клика для отметки контакта галочкой
             return this;                                                // Возвращаем ссылку на текущий объект хелпера
         }
 
@@ -74,6 +89,12 @@ namespace WebAddressbookTests                               // Простран�
             driver.FindElements(By.Name("entry"))[index]                // Поиск картинки-иконки редактирования в 8-й ячейке указанной по индексу строки таблицы контактов
                 .FindElements(By.TagName("td"))[7]
                 .FindElement(By.TagName("a")).Click();                  // Клик по иконке для перехода к форме модификации
+            return this;                                                // Возвращаем ссылку на текущий объект хелпера
+        }        
+
+        public ContactHelper InitModifyCreation(string id)              // Низкоуровневый метод открытия формы редактирования контакта через таблицу
+        {
+            driver.FindElement(By.XPath("(//tr[td[1]/input[@value='" + id + "']]/td[8]/a])")).Click();                 // Клик по иконке для перехода к форме модификации
             return this;                                                // Возвращаем ссылку на текущий объект хелпера
         }
 
@@ -284,6 +305,37 @@ namespace WebAddressbookTests                               // Простран�
             string text = driver.FindElement(By.TagName("label")).Text;
             Match m = new Regex(@"\d").Match(text);
             return Int32.Parse(m.Value);
+        }
+
+        public void AddToGroup(ContactData contact, GroupData group)
+        {
+            manager.Navigator.GoToHomePage();
+            ClearGroupFilter();
+            SelectContact(contact.Id);
+            SelectGroupToAdd(group.Name);
+            CommitAddingContactToGroup();
+            new WebDriverWait(driver, TimeSpan.FromSeconds(10))
+                .Until(d => d.FindElements(By.CssSelector("div.msgbox")).Count > 0);
+        }
+
+        public void ClearGroupFilter()
+        {
+            new SelectElement(driver.FindElement(By.Name("group"))).SelectByText("[all]");
+        }
+
+        public void SelectContact(string contactId)
+        {
+            driver.FindElement(By.Id(contactId)).Click();
+        }
+
+        public void SelectGroupToAdd(string name)
+        {
+            new SelectElement(driver.FindElement(By.Name("to group"))).SelectByText(name);
+        }
+
+        public void CommitAddingContactToGroup()
+        {
+            driver.FindElement(By.Name("add")).Click();
         }
     }
 }

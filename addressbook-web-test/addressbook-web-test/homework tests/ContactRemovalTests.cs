@@ -16,19 +16,16 @@ namespace WebAddressbookTests                       // Пространство 
         {
             app.Contacts.GetOrCreateContact(0);     // Предусловие: Гарантируем наличие хотя бы одного контакта на первой позиции (индекс 0) — создаем его, если список пуст
 
-            List<ContactData> oldContacts = 
-                app.Contacts.GetContactsList();     // Шаг 1: Получаем исходный список контактов с веб-страницы до выполнения удаления
+            List<ContactData> oldContacts = ContactData.GetAll();     // Шаг 1: Получаем исходный список контактов с веб-страницы до выполнения удаления
+            ContactData toBeRemoved = oldContacts[0];
 
-            app.Contacts.Remove(0);                 // Шаг 2: Вызываем хелпер контактов для удаления самого первого контакта (по порядковому индексу 0)
+            app.Contacts.Remove(toBeRemoved);                 // Шаг 2: Вызываем хелпер контактов для удаления самого первого контакта (по порядковому индексу 0)
 
             Assert.AreEqual(oldContacts.Count - 1,
                 app.Contacts.GetContactsCount());   // Проверка 1 (Быстрая): Убеждаемся, что текущее количество строк на странице (GetContactsCount) ровно на 1 меньше, чем было изначально
 
-            List<ContactData> newContacts = 
-                app.Contacts.GetContactsList();     // Шаг 3: Получаем новый, обновленный список контактов с веб-страницы после удаления
-
-            ContactData toBeRemoved = oldContacts[0];   // Запоминаем объект контакта, который мы намеревались удалить (самый первый из исходного списка)
-            
+            List<ContactData> newContacts = ContactData.GetAll();     // Шаг 3: Получаем новый, обновленный список контактов с веб-страницы после удаления
+                      
             oldContacts.RemoveAt(0);                    // Моделируем удаление этого же контакта локально в нашем старом списке в оперативной памяти
 
             Assert.AreEqual(oldContacts, newContacts);  // Проверка 2 (Глубокая): Сравниваем модифицированный старый список и новый список с сайта (проверяются Фамилия и Имя благодаря IEquatable)

@@ -4,7 +4,8 @@ using System.Text;                                  // Подключение б
 namespace WebAddressbookTests                           // Пространство имен проекта
 {
     public class TestBase                               // Главный базовый класс, от которого наследуются все тестовые классы
-    {                               
+    {                
+        public static bool PERFORM_LONG_UI_CHECKS = true;
         protected ApplicationManager app;               // Защищенная переменная, видимая в наследниках, для работы с менеджером сайта
 
         [SetUp]                                         // Атрибут NUnit: этот метод автоматически вызывается ПЕРЕД каждым тест-кейсом
