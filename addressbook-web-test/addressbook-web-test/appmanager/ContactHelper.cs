@@ -337,5 +337,27 @@ namespace WebAddressbookTests                               // Простран�
         {
             driver.FindElement(By.Name("add")).Click();
         }
+
+        internal void RemoveFromGroup(ContactData contact, GroupData group)
+        {
+            manager.Navigator.GoToHomePage();
+            SelectGroupToRemove(group.Name);
+            SelectContact(contact.Id);
+            CommitContactRemoveFromGroup(group.Name);
+            new WebDriverWait(driver, TimeSpan.FromSeconds(10))
+                .Until(d => d.FindElements(By.CssSelector("div.msgbox")).Count > 0);
+        }
+
+        private void SelectGroupToRemove(string name)
+        {
+            new SelectElement(driver.FindElement(By.Name("group"))).SelectByText(name);
+        }
+
+        private void CommitContactRemoveFromGroup(string groupName)
+        {
+            driver.FindElement(By.XPath
+                            ("(//input[@name='remove' and @value= 'Remove from \"" + groupName + "\"'])"))
+                                .Click();
+        }
     }
 }
