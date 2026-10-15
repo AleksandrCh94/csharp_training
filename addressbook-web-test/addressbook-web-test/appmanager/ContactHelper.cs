@@ -94,7 +94,7 @@ namespace WebAddressbookTests                               // Простран�
 
         public ContactHelper InitModifyCreation(string id)              // Низкоуровневый метод открытия формы редактирования контакта через таблицу
         {
-            driver.FindElement(By.XPath("(//tr[td[1]/input[@value='" + id + "']]/td[8]/a])")).Click();                 // Клик по иконке для перехода к форме модификации
+            driver.FindElement(By.XPath("(//tr[td[1]/input[@value='" + id + "']]/td[8]/a)")).Click();                 // Клик по иконке для перехода к форме модификации
             return this;                                                // Возвращаем ссылку на текущий объект хелпера
         }
 
