@@ -1,9 +1,6 @@
-﻿using NUnit.Framework;                      // Подключение тестового фреймворка NUnit для работы с тестами
-using System;                               // Подключение базового пространства имен .NET
-using System.Security.Cryptography;
-using System.Text;                          // Подключение поддержки работы с кодировками и текстовыми строками
-using System.Text.RegularExpressions;       // Подключение классов для обработки регулярных выражений
-using System.Threading;                     // Подключение инструментов управления потоками и ожиданиями выполнения
+﻿using System;                               // Подключение базового пространства имен .NET
+using NUnit.Framework;                      // Подключение тестового фреймворка NUnit для работы с тестами
+using System.Collections.Generic;
 
 namespace WebAddressbookTests                       // Пространство имен проекта для логической связи всех файлов
 {
@@ -27,6 +24,10 @@ namespace WebAddressbookTests                       // Пространство 
             List<ContactData> newContacts = ContactData.GetAll();     // Шаг 3: Получаем новый, обновленный список контактов с веб-страницы после удаления
                       
             oldContacts.RemoveAt(0);                    // Моделируем удаление этого же контакта локально в нашем старом списке в оперативной памяти
+
+            // Сортируем списки, чтобы тест не зависел от случайного порядка строк, возвращаемых БД
+            oldContacts.Sort();
+            newContacts.Sort();
 
             Assert.AreEqual(oldContacts, newContacts);  // Проверка 2 (Глубокая): Сравниваем модифицированный старый список и новый список с сайта (проверяются Фамилия и Имя благодаря IEquatable)
 

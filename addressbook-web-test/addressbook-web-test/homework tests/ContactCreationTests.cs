@@ -1,16 +1,10 @@
 ﻿using System;                               // Подключение базовых типов и системных функций .NET
 using System.IO;
-using System.Text;                          // Подключение поддержки работы со строками и кодировками
-using System.Text.RegularExpressions;       // Подключение классов для обработки регулярных выражений
-using System.Threading;                     // Подключение инструментов управления потоками и паузами
 using System.Collections.Generic;
-using System.Xml;                      // Подключение фреймворка NUnit для выполнения тестов
 using System.Xml.Serialization;                      // Подключение фреймворка NUnit для выполнения тестов
 using Newtonsoft.Json;
 using Excel = Microsoft.Office.Interop.Excel;
 using NUnit.Framework;
-using OpenQA.Selenium.BiDi.Network;
-
 
 namespace WebAddressbookTests                           // Пространство имен для логической группировки классов проекта
 {
@@ -50,7 +44,7 @@ namespace WebAddressbookTests                           // Пространст�
                 File.ReadAllText(@"contacts.json"));
         }
 
-        [Test, TestCaseSource("ContactDataFromXmlFile")]       // Атрибут NUnit: помечает метод как тест-кейс для проверки создания заполненного контакта
+        [Test, TestCaseSource("ContactDataFromJsonFile")]       // Атрибут NUnit: помечает метод как тест-кейс для проверки создания заполненного контакта
         public void ContactCreationTest(ContactData contact)      // Тест-кейс: успешное добавление контакта с именем и фамилией
         {            
             List<ContactData> oldContacts = ContactData.GetAll();         // Шаг 1: Считываем исходный список контактов с веб-страницы до выполнения операции создания

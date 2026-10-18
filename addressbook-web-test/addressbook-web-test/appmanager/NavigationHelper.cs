@@ -1,11 +1,5 @@
-﻿using System;                               // Подключение базовых типов и системных функций .NET
-using System.Text;                          // Подключение поддержки работы с кодировками и текстовыми строками
-using System.Text.RegularExpressions;       // Подключение инструментов для работы с регулярными выражениями
-using System.Threading;                     // Подключение инструментов управления задержками и потоками
-using NUnit.Framework;                      // Подключение библиотек тестового фреймворка NUnit
+﻿
 using OpenQA.Selenium;                      // Подключение основных интерфейсов библиотеки Selenium WebDriver
-using OpenQA.Selenium.Chrome;               // Подключение компонентов драйвера браузера Chrome
-using OpenQA.Selenium.Support.UI;           // Подключение вспомогательных классов Selenium (ожидания и т.д.)
 
 namespace WebAddressbookTests                               // Пространство имен проекта для логического объединения кода
 {
@@ -13,11 +7,10 @@ namespace WebAddressbookTests                               // Простран�
     {
         private string baseURL;                             // Приватное поле для хранения базового интернет-адреса тестируемого сайта
 
-        public NavigationHelper
-            (ApplicationManager manager, string baseURL)    // Конструктор хелпера, принимающий менеджер приложения и базовый URL-адрес
-            : base(manager)                                 // Перенаправление ссылки на менеджер в конструктор базового класса HelperBase
+        public NavigationHelper(ApplicationManager manager, string baseURL)     // Конструктор хелпера, принимающий менеджер приложения и базовый URL-адрес
+            : base(manager)                                                     // Перенаправление ссылки на менеджер в конструктор базового класса HelperBase
         {
-            this.baseURL = baseURL;                         // Сохраняем полученный адрес сайта во внутреннее поле baseURL текущего объекта
+            this.baseURL = baseURL;                                             // Сохраняем полученный адрес сайта во внутреннее поле baseURL текущего объекта
         }
 
         public void GoToHomePage()                                  // Метод умного перехода на главную страницу веб-приложения
@@ -36,7 +29,7 @@ namespace WebAddressbookTests                               // Простран�
             {
                 return;                                             // Прерываем выполнение метода и выходим, так как мы уже находимся в нужном месте
             }
-            driver.FindElement(By.LinkText("groups")).Click();      // Находим в меню ссылку по ее точному тексту "groups" и нажимаем на нее для перехода
+            driver.Navigate().GoToUrl(baseURL + "/addressbook/group.php");      // Тесты падали из-за зависимости от ссылки на группу. Сделал прямой переход по прямому URL
         }
     }
 }

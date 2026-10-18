@@ -19,6 +19,9 @@ namespace WebAddressbookTests               // Пространство имен
         private ApplicationManager()                                // Приватный конструктор (запрещает создание через 'new' снаружи класса)
         {                                                     
             driver = new ChromeDriver();                            // Физический запуск и инициализация процесса браузера Google Chrome
+            driver.Manage().Window.Maximize();
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
+
             baseURL = "http://localhost";                           // Запись базового адреса тестируемого сайта в переменную
 
             loginHelper = new LoginHelper(this);                    // Создание хелпера логина и передача ему ссылки на этот менеджер
@@ -67,27 +70,27 @@ namespace WebAddressbookTests               // Пространство имен
 
         public LoginHelper Auth                               // Свойство для получения помощника авторизации снаружи
         {                                                     
-            get { return loginHelper; }                       // Возвращает скрытое приватное поле _loginHelper
+            get { return loginHelper; }                       // Возвращает скрытое приватное поле loginHelper
         }                                                     
 
         public NavigationHelper Navigator                     // Свойство для получения помощника навигации снаружи
         {                                                     
-            get { return navigationHelper; }                  // Возвращает скрытое приватное поле _navigationHelper
+            get { return navigationHelper; }                  // Возвращает скрытое приватное поле navigationHelper
         }                                                     
 
         public GroupHelper Groups                             // Свойство для получения помощника групп снаружи
         {                                                     
-            get { return groupHelper; }                       // Возвращает скрытое приватное поле _groupHelper
+            get { return groupHelper; }                       // Возвращает скрытое приватное поле groupHelper
         }                                                     
 
         public ContactHelper Contacts                         // Свойство для получения помощника контактов снаружи
         {                                                     
-            get { return contactHelper; }                     // Возвращает скрытое приватное поле _contactHelper
+            get { return contactHelper; }                     // Возвращает скрытое приватное поле contactHelper
         }                                                     
 
         public IWebDriver Driver                              // Свойство для прямого доступа к самому драйверу Selenium
         {                                                     
-            get { return driver; }                            // Возвращает скрытое приватное поле _driver
+            get { return driver; }                            // Возвращает скрытое приватное поле driver
         }                                                     
     }
 }

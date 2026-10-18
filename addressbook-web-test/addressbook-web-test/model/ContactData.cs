@@ -1,19 +1,19 @@
-﻿using System;                                   // Подключение базовых системных типов C#
-using System.Collections.Generic;               // Подключение инструментов для работы со списками
-using System.Text;                              // Подключение инструментов для работы с текстом
+﻿using System;                               // Подключение базовых системных типов C#
+using System.Collections.Generic;           // Подключение инструментов для работы со списками
+using System.Linq;                          // Подключение инструментов для удобной работы с коллекциями
 using System.Text.RegularExpressions;
 using LinqToDB.Mapping;
 
-namespace WebAddressbookTests                   // Пространство имен проекта адресной книги
+namespace WebAddressbookTests               // Пространство имен проекта адресной книги
 {
     [Table(Name = "addressbook")]
     public class ContactData : IEquatable<ContactData>, 
-        IComparable<ContactData>                // Класс-модель, представляющий структуру данных одного контакта на сайте
+        IComparable<ContactData>            // Класс-модель, представляющий структуру данных одного контакта на сайте
     {
         private string allPhones;
         private string allEmails;
 
-        public ContactData()    // Конструктор класса без параметров
+        public ContactData()                // Конструктор класса без параметров
         {
         }
 
@@ -32,18 +32,25 @@ namespace WebAddressbookTests                   // Пространство им
         [Column(Name = "lastname")]
         public string LastName { get; set; }    // Публичное автоматическое свойство для хранения Фамилии контакта
 
+        [Column(Name = "address")]
         public string Address { get; set; }    // Публичное автоматическое свойство для хранения Адреса контакта
 
+        [Column(Name = "home")]
         public string HomePhone { get; set; }    // Публичное автоматическое свойство для хранения Домашнего телефона контакта
 
+        [Column(Name = "mobile")]
         public string MobilePhone { get; set; }    // Публичное автоматическое свойство для хранения Мобильного телефона контакта
 
+        [Column(Name = "work")]
         public string WorkPhone { get; set; }    // Публичное автоматическое свойство для хранения Рабочего телефона контакта
 
+        [Column(Name = "email")]
         public string Email { get; set; }    // Публичное автоматическое свойство для хранения Рабочего телефона контакта
 
+        [Column(Name = "email2")]
         public string Email2 { get; set; }    // Публичное автоматическое свойство для хранения Рабочего телефона контакта
 
+        [Column(Name = "email3")]
         public string Email3 { get; set; }    // Публичное автоматическое свойство для хранения Рабочего телефона контакта
 
         [Column(Name = "deprecated")]

@@ -1,6 +1,6 @@
 ﻿using System;                               // Подключение основных системных компонентов .NET
 using System.Collections.Generic;           // Подключение поддержки работы с коллекциями данных
-using System.Text;                          // Подключение поддержки обработки текстовых строк
+using System.Linq;                          // Подключение инструментов для удобной работы с коллекциями
 using LinqToDB.Mapping;
 
 namespace WebAddressbookTests               // Пространство имен проекта
@@ -77,10 +77,9 @@ namespace WebAddressbookTests               // Пространство имен
             using (AddressBookDB db = new AddressBookDB())
             {
                 return (from c in db.Contacts
-                            from gcr in db.GCR.Where(p => p.GroupId == Id 
-                            && p.ContactId == Id 
-                            && c.Deprecated == "0000-00-00 00:00:00")
-                            select c).Distinct().ToList();
+                        from gcr in db.GCR.Where(p => p.GroupId == Id 
+                            && p.ContactId == c.Id)
+                        select c).Distinct().ToList();
             }
         }
     }

@@ -1,16 +1,15 @@
 ﻿using System;                               // Подключение базовых типов и системных функций .NET
-using System.Text;                          // Подключение поддержки работы с кодировками и текстовыми строками
+using System.Collections.Generic;
 using System.Text.RegularExpressions;       // Подключение инструментов для работы с регулярными выражениями
-using System.Threading;                     // Подключение инструментов управления задержками и потоками
-using NUnit.Framework;                      // Подключение библиотек тестового фреймворка NUnit
 using OpenQA.Selenium;                      // Подключение основных интерфейсов библиотеки Selenium WebDriver
-using OpenQA.Selenium.Chrome;               // Подключение компонентов драйвера браузера Chrome
 using OpenQA.Selenium.Support.UI;           // Подключение вспомогательных классов Selenium (ожидания и т.д.)
 
 namespace WebAddressbookTests                               // Пространство имен проекта для логического объединения кода
 {
     public class ContactHelper : HelperBase                 // Объявление класса-помощника для работы с контактами, наследующего базовые методы Selenium из HelperBase
     {
+        private List<ContactData> contactCache = null;              // Приватное поле для временного хранения списка контактов (кеша) в оперативной памяти
+
         public ContactHelper(ApplicationManager manager)    // Конструктор хелпера, принимающий ссылку на главный менеджер приложения
             : base(manager)                                 // Перенаправление ссылки на менеджер в конструктор базового класса HelperBase
         {
@@ -27,7 +26,7 @@ namespace WebAddressbookTests                               // Простран�
 
         public ContactHelper Modify(int index, ContactData newData) // Высокоуровневый метод для редактирования контакта по его индексу в таблице
         {
-            InitModifyCreation(index);                              // Открытие формы редактирования конкретного контакта нажатием на иконку карандаша
+            InitContactModification(index);                              // Открытие формы редактирования конкретного контакта нажатием на иконку карандаша
             FillContactForm(newData);                               // Перезаполнение формы новыми переданными текстовыми данными
             SubmitContactModification();                            // Подтверждение изменений нажатием кнопки обновления данных
             ReturnToHomePage();                                     // Возврат на главную страницу сайта к общему списку
@@ -36,7 +35,7 @@ namespace WebAddressbookTests                               // Простран�
 
         public ContactHelper Modify(ContactData oldData, ContactData newData) // Высокоуровневый метод для редактирования контакта по его индексу в таблице
         {
-            InitModifyCreation(oldData.Id);                              // Открытие формы редактирования конкретного контакта нажатием на иконку карандаша
+            InitContactModification(oldData.Id);                              // Открытие формы редактирования конкретного контакта нажатием на иконку карандаша
             FillContactForm(newData);                               // Перезаполнение формы новыми переданными текстовыми данными
             SubmitContactModification();                            // Подтверждение изменений нажатием кнопки обновления данных
             ReturnToHomePage();                                     // Возврат на главную страницу сайта к общему списку
@@ -59,88 +58,98 @@ namespace WebAddressbookTests                               // Простран�
             return this;                        // Возвращаем ссылку на текущий объект хелпера
         }
 
-        public ContactHelper InitNewContactCreation()           // Низкоуровневый метод перехода к форме создания нового контакта
+        public ContactHelper InitNewContactCreation()   // Низкоуровневый метод перехода к форме создания нового контакта
         {
-            driver.FindElement(By.LinkText("add new")).Click(); // Поиск ссылки по её точной видимой строке "add new" и выполнение клика
+            Click(By.LinkText("add new"));              // Поиск ссылки по её точной видимой строке "add new" и выполнение клика
+            return this;                                // Возвращаем ссылку на текущий объект хелпера
+        }
+
+        public ContactHelper GetOrCreateContact(int index)      // Метод обеспечения предусловия: получение существующего контакта или его автосоздание при отсутствии
+        {
+            if (!IsElementPresent(By.XPath                      // Проверка: если в таблице по указанному смещенному индексу строки отсутствует чекбокс контакта
+                ("//table[@id='maintable']/tbody/tr" +
+                "[" + (index + 2) + "]/td/input")))             // XPath-локатор чекбокса с инкрементом индекса для пропуска строки заголовков
+            {
+                ContactData contact = new ContactData
+                    ("test first name", "test last name");      // Создаем тестовые данные имени нового контакта на случай его отсутствия
+
+                Create(contact);                                // Вызываем метод создания контакта, чтобы наполнить таблицу данными
+            }                                                     
             return this;                                        // Возвращаем ссылку на текущий объект хелпера
         }
 
-        public ContactHelper GetOrCreateContact(int index)              // Метод обеспечения предусловия: получение существующего контакта или его автосоздание при отсутствии
+        public ContactHelper SelectContact(int index)           // Низкоуровневый метод выбора чекбокса контакта по порядковому номеру строки
         {
-            if (!IsElementPresent(By.XPath                              // Проверка: если в таблице по указанному смещенному индексу строки отсутствует чекбокс контакта
-                ("//table[@id='maintable']/tbody/tr" +
-                "[" + (index + 2) + "]/td/input")))                     // XPath-локатор чекбокса с инкрементом индекса для пропуска строки заголовков
-            {
-                ContactData contact = new ContactData("alex", "che");   // Создаем тестовые данные имени нового контакта на случай его отсутствия
-
-                Create(contact);                                        // Вызываем метод создания контакта, чтобы наполнить таблицу данными
-            }                                                     
-            return this;                                                // Возвращаем ссылку на текущий объект хелпера
+            Click(By.XPath("//table[@id='maintable']/tbody/tr" +
+                "[" + (index + 2) + "]/td/input"));             // Выполнение клика для отметки контакта галочкой
+            return this;                                        // Возвращаем ссылку на текущий объект хелпера
         }
 
-        public ContactHelper SelectContact(int index)                   // Низкоуровневый метод выбора чекбокса контакта по порядковому номеру строки
+        public ContactHelper InitContactModification(int index)     // Низкоуровневый метод открытия формы редактирования контакта через таблицу
         {
-            driver.FindElement(By.XPath(@"tr[index]/td/input")).Click();             // Выполнение клика для отметки контакта галочкой
-            return this;                                                // Возвращаем ссылку на текущий объект хелпера
-        }
-
-        public ContactHelper InitModifyCreation(int index)              // Низкоуровневый метод открытия формы редактирования контакта через таблицу
-        {
-            driver.FindElements(By.Name("entry"))[index]                // Поиск картинки-иконки редактирования в 8-й ячейке указанной по индексу строки таблицы контактов
+            driver.FindElements(By.Name("entry"))[index]            // Поиск картинки-иконки редактирования в 8-й ячейке указанной по индексу строки таблицы контактов
                 .FindElements(By.TagName("td"))[7]
-                .FindElement(By.TagName("a")).Click();                  // Клик по иконке для перехода к форме модификации
-            return this;                                                // Возвращаем ссылку на текущий объект хелпера
+                .FindElement(By.TagName("a")).Click();              // Клик по иконке для перехода к форме модификации
+            return this;                                            // Возвращаем ссылку на текущий объект хелпера
         }        
 
-        public ContactHelper InitModifyCreation(string id)              // Низкоуровневый метод открытия формы редактирования контакта через таблицу
+        public ContactHelper InitContactModification(string id)     // Низкоуровневый метод открытия формы редактирования контакта через таблицу
         {
-            driver.FindElement(By.XPath("(//tr[td[1]/input[@value='" + id + "']]/td[8]/a)")).Click();                 // Клик по иконке для перехода к форме модификации
-            return this;                                                // Возвращаем ссылку на текущий объект хелпера
+            Click(By.XPath("(//tr[td[1]/input" +
+                "[@value='" + id + "']]/td[8]/a)"));                // Клик по иконке для перехода к форме модификации
+            return this;                                            // Возвращаем ссылку на текущий объект хелпера
         }
 
-        public ContactHelper InitShowContactDetails(int index)              // Низкоуровневый метод открытия формы редактирования контакта через таблицу
+        public ContactHelper InitShowContactDetails(int index)      // Низкоуровневый метод открытия формы редактирования контакта через таблицу
         {
-            driver.FindElements(By.Name("entry"))[index]                // Поиск картинки-иконки редактирования в 8-й ячейке указанной по индексу строки таблицы контактов
+            driver.FindElements(By.Name("entry"))[index]            // Поиск картинки-иконки редактирования в 8-й ячейке указанной по индексу строки таблицы контактов
                 .FindElements(By.TagName("td"))[6]
-                .FindElement(By.TagName("a")).Click();                  // Клик по иконке для перехода к форме модификации
-            return this;                                                // Возвращаем ссылку на текущий объект хелпера
+                .FindElement(By.TagName("a")).Click();              // Клик по иконке для перехода к форме модификации
+            return this;                                            // Возвращаем ссылку на текущий объект хелпера
         }
 
         public ContactHelper FillContactForm(ContactData contact)   // Низкоуровневый метод заполнения полей формы создания/редактирования контакта
         {
             Type(By.Name("firstname"), contact.FirstName);          // Очистка и ввод имени контакта в текстовое поле с атрибутом name="firstname"
             Type(By.Name("lastname"), contact.LastName);            // Очистка и ввод фамилии контакта в текстовое поле с атрибутом name="lastname"
+            //Type(By.Name("address"), contact.Address);
+            //Type(By.Name("home"), contact.HomePhone);
+            //Type(By.Name("mobile"), contact.MobilePhone);
+            //Type(By.Name("work"), contact.WorkPhone);
+            //Type(By.Name("email"), contact.Email);
+            //Type(By.Name("email2"), contact.Email2);
+            //Type(By.Name("email3"), contact.Email3); 
             return this;                                            // Возвращаем ссылку на текущий объект хелпера
         }
 
-        public ContactHelper SubmitContactCreation()                // Низкоуровневый метод сохранения только что созданного контакта
+        public ContactHelper SubmitContactCreation()        // Низкоуровневый метод сохранения только что созданного контакта
         {
-            driver.FindElement(By.XPath("//input[19]")).Click();    // Поиск кнопки отправки формы по её порядковому номеру (19-й тег input) и клик по ней
+            Click(By.XPath("//input[19]"));                 // Поиск кнопки отправки формы по её порядковому номеру (19-й тег input) и клик по ней
+            //Click(By.Name("submit")); требуется проверка!!!
             contactCache = null;
-            return this;                                            // Возвращаем ссылку на текущий объект хелпера
+            return this;                                    // Возвращаем ссылку на текущий объект хелпера
         }
 
-        public ContactHelper SubmitContactModification()            // Низкоуровневый метод сохранения отредактированных данных контакта
+        public ContactHelper SubmitContactModification()    // Низкоуровневый метод сохранения отредактированных данных контакта
         {
-            driver.FindElement(By.XPath("//input[20]")).Click();    // Поиск кнопки сохранения изменений по её порядковому номеру (20-й тег input) и клик по ней
+            Click(By.XPath("//input[20]"));                 // Поиск кнопки сохранения изменений по её порядковому номеру (20-й тег input) и клик по ней
             contactCache = null;
-            return this;                                            // Возвращаем ссылку на текущий объект хелпера
+            return this;                                    // Возвращаем ссылку на текущий объект хелпера
         }
 
-        public ContactHelper RemoveContact()                        // Низкоуровневый метод инициации удаления выбранных контактов
+        public ContactHelper RemoveContact()                // Низкоуровневый метод инициации удаления выбранных контактов
         {
-            driver.FindElement(By.Name("delete")).Click();          // Поиск управляющей кнопки удаления по её имени name="delete" и нажатие на неё
+            Click(By.Name("delete"));                       // Поиск управляющей кнопки удаления по её имени name="delete" и нажатие на неё
+            //Click(By.Name("update")); требуется проверка!!!
             contactCache = null;
-            return this;                                            // Возвращаем ссылку на текущий объект хелпера
+            return this;                                    // Возвращаем ссылку на текущий объект хелпера
         }
 
-        public ContactHelper ReturnToHomePage()                     // Низкоуровневый метод перехода на главную страницу через ссылку завершения операции
+        public ContactHelper ReturnToHomePage()             // Низкоуровневый метод перехода на главную страницу через ссылку завершения операции
         {
-            driver.FindElement(By.LinkText("home page")).Click();   // Поиск ссылки с текстом "home page" и выполнение клика по ней
-            return this;                                            // Возвращаем ссылку на текущий объект хелпера
+            Click(By.LinkText("home page"));                // Поиск ссылки с текстом "home page" и выполнение клика по ней
+            return this;                                    // Возвращаем ссылку на текущий объект хелпера
         }
-
-        private List<ContactData> contactCache = null;              // Приватное поле для временного хранения списка контактов (кеша) в оперативной памяти
 
         public List<ContactData> GetContactsList()                  // Высокоуровневый метод получения актуального списка контактов с поддержкой кеширования
         {
@@ -193,7 +202,7 @@ namespace WebAddressbookTests                               // Простран�
         public ContactData GetContactInformationFromForm(int index)
         {
             manager.Navigator.GoToHomePage();
-            InitModifyCreation(index);
+            InitContactModification(index);
 
             string firstName = driver.FindElement(By.Name("firstname")).GetAttribute("value");
             string lastName = driver.FindElement(By.Name("lastname")).GetAttribute("value");
@@ -220,7 +229,7 @@ namespace WebAddressbookTests                               // Простран�
         public string GetContactInformationFromFormInString(int index)
         {
             manager.Navigator.GoToHomePage();
-            InitModifyCreation(index);
+            InitContactModification(index);
 
             string firstName = driver.FindElement(By.Name("firstname")).GetAttribute("value");
             string lastName = driver.FindElement(By.Name("lastname")).GetAttribute("value");
@@ -244,7 +253,7 @@ namespace WebAddressbookTests                               // Простран�
                 return "";
             }
 
-            // БЛОК 3: Инициализация списка строк
+            //Инициализация списка строк
             List<string> lines = new List<string>();
 
             // Добавляем Имя и Фамилию, только если они заполнены
@@ -256,7 +265,9 @@ namespace WebAddressbookTests                               // Простран�
 
             // Если поле адреса в форме было заполнено, добавляем его в список следующей строкой
             if (hasAddress)
+            {
                 lines.Add(address);
+            }
 
             if (hasPhones)
             {
@@ -296,14 +307,14 @@ namespace WebAddressbookTests                               // Простран�
             manager.Navigator.GoToHomePage();
             InitShowContactDetails(index);
             string info = driver.FindElement(By.Id("content")).Text;
-            return info; //Regex.Replace(info, "[H:M]", "");
+            return info;
         }
 
         public int GetNumberOfSearchResults()
         {
             manager.Navigator.GoToHomePage();
             string text = driver.FindElement(By.TagName("label")).Text;
-            Match m = new Regex(@"\d").Match(text);
+            Match m = new Regex(@"\d+").Match(text);
             return Int32.Parse(m.Value);
         }
 
@@ -325,20 +336,20 @@ namespace WebAddressbookTests                               // Простран�
 
         public void SelectContact(string contactId)
         {
-            driver.FindElement(By.Id(contactId)).Click();
+            Click(By.Id(contactId));
         }
 
         public void SelectGroupToAdd(string name)
         {
-            new SelectElement(driver.FindElement(By.Name("to group"))).SelectByText(name);
+            new SelectElement(driver.FindElement(By.Name("to_group"))).SelectByText(name);
         }
 
         public void CommitAddingContactToGroup()
         {
-            driver.FindElement(By.Name("add")).Click();
+            Click(By.Name("add"));
         }
 
-        internal void RemoveFromGroup(ContactData contact, GroupData group)
+        public void RemoveFromGroup(ContactData contact, GroupData group)
         {
             manager.Navigator.GoToHomePage();
             SelectGroupToRemove(group.Name);
@@ -348,16 +359,15 @@ namespace WebAddressbookTests                               // Простран�
                 .Until(d => d.FindElements(By.CssSelector("div.msgbox")).Count > 0);
         }
 
-        private void SelectGroupToRemove(string name)
+        public void SelectGroupToRemove(string name)
         {
             new SelectElement(driver.FindElement(By.Name("group"))).SelectByText(name);
         }
 
-        private void CommitContactRemoveFromGroup(string groupName)
+        public void CommitContactRemoveFromGroup(string groupName)
         {
-            driver.FindElement(By.XPath
-                            ("(//input[@name='remove' and @value= 'Remove from \"" + groupName + "\"'])"))
-                                .Click();
+            Click(By.XPath("(//input[@name='remove' and " +
+                "@value= 'Remove from \"" + groupName + "\"'])"));
         }
     }
 }

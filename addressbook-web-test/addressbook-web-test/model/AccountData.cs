@@ -15,5 +15,10 @@ namespace WebAddressbookTests                                   // Простр�
         public string Username { get; set; }    // Публичное автоматическое свойство для работы с логином (поле Username)
 
         public string Password { get; set; }    // Публичное автоматическое свойство для работы с паролем (поле Password)
+
+        public override string ToString()       // Xтобы было видно, под каким пользователем упал тест
+        {
+            return Username;
+        }
     }
 }

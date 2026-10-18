@@ -1,7 +1,4 @@
-﻿using System;                               // Подключение базовых системных типов .NET
-using System.Text;                          // Подключение классов для работы с текстом и кодировками
-using System.Text.RegularExpressions;       // Подключение поддержки регулярных выражений
-using System.Threading;                     // Подключение инструментов управления потоками выполнения
+﻿
 using NUnit.Framework;                      // Подключение тестового фреймворка NUnit для работы с тестами и проверками
 
 namespace WebAddressbookTests               // Пространство имен, объединяющее тесты проекта
@@ -33,7 +30,7 @@ namespace WebAddressbookTests               // Пространство имен
             
             app.Auth.Login(account);                        // Передаем невалидные данные в метод авторизации хелпера
             
-            Assert.IsFalse(app.Auth.IsLoggedIn(account));   // Проверяем, что метод IsLoggedIn вернул False, подтверждая, что вход выполнен не был
+            Assert.IsFalse(app.Auth.IsLoggedIn());          // Проверяем, что метод IsLoggedIn вернул False, подтверждая, что вход выполнен не был
         }
     }
 }

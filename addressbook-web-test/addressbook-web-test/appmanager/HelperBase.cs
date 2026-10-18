@@ -1,11 +1,5 @@
 ﻿using System;                               // Подключение базовых типов и системных функций .NET
-using System.Text;                          // Подключение поддержки работы с кодировками и текстовыми строками
-using System.Text.RegularExpressions;       // Подключение инструментов для работы с регулярными выражениями
-using System.Threading;                     // Подключение инструментов управления задержками и потоками
-using NUnit.Framework;                      // Подключение библиотек тестового фреймворка NUnit
 using OpenQA.Selenium;                      // Подключение основных интерфейсов библиотеки Selenium WebDriver
-using OpenQA.Selenium.Chrome;               // Подключение компонентов драйвера браузера Chrome
-using OpenQA.Selenium.Support.UI;           // Подключение вспомогательных классов Selenium (ожидания и т.д.)
 
 namespace WebAddressbookTests                           // Пространство имен проекта для логического объединения кода
 {
@@ -40,6 +34,12 @@ namespace WebAddressbookTests                           // Пространст�
             {
                 return false;               // Если элемент не был найден и выпало исключение, возвращаем ложь (False)
             }
+        }
+
+        //Добавил метод Click(By locator), чтобы в GroupHelper/ContactHelper не писать driver.FindElement(...).Click()
+        public void Click(By locator)
+        {
+            driver.FindElement(locator).Click();
         }
     }
 }

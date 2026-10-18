@@ -1,5 +1,6 @@
-﻿using NUnit.Framework;
-using System.Text;                                  // Подключение библиотеки NUnit для использования тестовых атрибутов
+﻿using System;
+using NUnit.Framework;              // Подключение библиотеки NUnit для использования тестовых атрибутов
+using System.Text;                                  
 
 namespace WebAddressbookTests                           // Пространство имен проекта
 {

@@ -52,9 +52,10 @@ namespace addressbook_tests_white
 
             textBox.Enter(newGroup.Name);   //вводит в найденное текстовое поле имя новой группы
 
-            Keyboard.Instance.PressSpecialKey(KeyboardInput.SpecialKeys.RETURN);    //Имитирует нажатие клавиши Enter на клавиатуре
-
-            CloseGroupsDialogue(dialogue);  //закрывает диалог групп после добавления
+            Keyboard.Instance.PressSpecialKey
+                (KeyboardInput.SpecialKeys.RETURN);     //Имитирует нажатие клавиши Enter на клавиатуре
+            System.Threading.Thread.Sleep(400);         // Ждем, пока Windows обработает нажатие клавиши
+            CloseGroupsDialogue(dialogue);              //закрывает диалог групп после добавления
         }
 
         private Window OpenGroupsDialogue()
@@ -66,7 +67,9 @@ namespace addressbook_tests_white
 
         private void CloseGroupsDialogue(Window dialogue)
         {
-            dialogue.Get<Button>("uxCloseAddressButton").Click();   //Закрывает диалог групп — ищет кнопку закрытия (uxCloseAddressButton) внутри переданного окна dialogue и кликает по ней.
+            dialogue.Get<Button>("uxCloseAddressButton").Click();   //Закрывает диалог групп — ищет кнопку закрытия (uxCloseAddressButton)
+                                                                    //внутри переданного окна dialogue и кликает по ней.            
+            System.Threading.Thread.Sleep(200);     // Даем окну закрыться плавно, чтобы управление вернулось главному окну
         }
 
         public void EnsureGroupExists()
@@ -88,6 +91,8 @@ namespace addressbook_tests_white
 
             Window confirmDialogue = dialogue.ModalWindow("Delete group");
             confirmDialogue.Get<Button>("uxOKAddressButton").Click();
+
+            System.Threading.Thread.Sleep(300); // Ожидание удаления из дерева
 
             CloseGroupsDialogue(dialogue);  //закрывает диалог групп после добавления
         }

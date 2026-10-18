@@ -1,7 +1,5 @@
 ﻿using System;                               // Подключение базовых типов и системных функций .NET
-using System.Text;                          // Подключение поддержки обработки текстовых строк и кодировок
-using System.Text.RegularExpressions;       // Подключение инструментов для работы с регулярными выражениями
-using System.Threading;                     // Подключение инструментов для управления задержками и потоками
+using System.Collections.Generic;
 using NUnit.Framework;                      // Подключение тестового фреймворка NUnit
 
 namespace WebAddressbookTests                               // Пространство имен проекта для логической организации кода

@@ -1,7 +1,5 @@
 ﻿using System;                               // Подключение базовых системных компонентов .NET
-using System.Text;                          // Подключение поддержки работы с текстом и кодировками
-using System.Text.RegularExpressions;       // Подключение классов для обработки регулярных выражений
-using System.Threading;                     // Подключение инструментов управления задержками и потоками
+using System.Collections.Generic;
 using NUnit.Framework;                      // Подключение тестового фреймворка NUnit
 
 namespace WebAddressbookTests                           // Пространство имен проекта для группировки кода
@@ -13,7 +11,7 @@ namespace WebAddressbookTests                           // Пространст�
         [Test]                                          // Атрибут NUnit: помечает метод как запускаемый автоматический тест-кейс
         public void GroupModificationTest()             // Тест-кейс: проверка редактирования параметров существующей группы
         {
-            GroupData newData = new GroupData("кerh");  // Создаем новый объект данных группы и сразу задаем ей измененное название "кerh"
+            GroupData newData = new GroupData("wrer");  // Создаем новый объект данных группы и сразу задаем ей измененное название "кerh"
             newData.Header = null;                      // Указываем, что заголовок (хедер) группы при модификации менять не нужно или оставить пустым
             newData.Footer = "xcb";                     // Задаем новое значение подвала (футера) группы — строку "xcb"
 
