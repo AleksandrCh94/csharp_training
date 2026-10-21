@@ -11,7 +11,8 @@ namespace addressbook_tests_white
     public class ApplicationManager
     {
         public static string WINTITLE = "Free Address Book";    //хранит заголовок главного окна тестируемого приложения
-        private GroupHelper grouphelper; //Приватное поле — хранит экземпляр хелпера GroupHelper. Инкапсулирован, доступ наружу — только через свойство Groups
+        private GroupHelper groupHelper; //Приватное поле — хранит экземпляр хелпера GroupHelper. Инкапсулирован, доступ наружу — только через свойство Groups
+        private ContactHelper contactHelper; //Приватное поле — хранит экземпляр хелпера ContactHelper. Инкапсулирован, доступ наружу — только через свойство Contacts
 
         public ApplicationManager() 
         {
@@ -20,7 +21,8 @@ namespace addressbook_tests_white
                                                                                     //White создаёт объект Application, который представляет запущенный процесс
             MainWindow = app.GetWindow(WINTITLE);   //ищет главное окно приложения по заголовку и сохраняет его в свойство MainWindow
 
-            grouphelper = new GroupHelper(this);    //создаёт хелпер для работы с группами, передавая ему ссылку на текущий ApplicationManager
+            groupHelper = new GroupHelper(this);    //создаёт хелпер для работы с группами, передавая ему ссылку на текущий ApplicationManager
+            contactHelper = new ContactHelper(this);    //создаёт хелпер для работы с контактами, передавая ему ссылку на текущий ApplicationManager
         }
 
         public void Stop()      //Закрывает приложение штатным способом через UI — находит кнопку выхода по её имени и кликает по ней
@@ -36,7 +38,15 @@ namespace addressbook_tests_white
         {
             get 
             {
-                return grouphelper;
+                return groupHelper;
+            }
+        }
+
+        public ContactHelper Contacts       //предоставляет доступ к приватному полю contactHelper
+        {
+            get
+            {
+                return contactHelper;
             }
         }
     }

@@ -10,7 +10,6 @@ using TestStack.White.UIItems.WindowItems;
 using TestStack.White.WindowsAPI;         // константы типа KeyboardInput.SpecialKeys
 using System.Windows.Automation;          // ControlType — из UI Automation API Windows
 
-
 namespace addressbook_tests_white
 {
     public class GroupHelper : HelperBase
