@@ -1,8 +1,9 @@
-﻿using System;
+﻿using NUnit.Framework;
+using OpenQA.Selenium;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using NUnit.Framework;
 
 namespace mantis_tests
 {
@@ -24,15 +25,17 @@ namespace mantis_tests
         {
             AccountData account = new AccountData()
             {
-                Name = "testuser4",
-                Password = "password",
-                Email = "testuser4@localhost.localdomain"
+                Name = "testuser26",
+                Password = "password26",
+                Email = "testuser26@localhost.localdomain"
             };
 
             app.James.Delete(account);
             app.James.Add(account);
 
             app.Registration.Register(account);
+
+            Assert.AreEqual(account.Name, app.Registration.GetAccountName());
         }
 
         [TearDown]

@@ -17,10 +17,18 @@ namespace mantis_tests               // Пространство имен про
         private static ApplicationManager instance;                 // Статическое поле, хранящее единственный экземпляр этого класса во всей программе
 
         private ApplicationManager()                                // Приватный конструктор (запрещает создание через 'new' снаружи класса)
-        {                                                     
-            driver = new ChromeDriver();                            // Физический запуск и инициализация процесса браузера Google Chrome
-            driver.Manage().Window.Maximize();
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
+        {
+            ChromeOptions options = new ChromeOptions();
+
+            // Отключаем Password Manager и уведомления об утечке/смене пароля
+            options.AddUserProfilePreference("credentials_enable_service", false);
+            options.AddUserProfilePreference("profile.password_manager_enabled", false);
+            options.AddUserProfilePreference("profile.password_manager_leak_detection", false);
+
+            driver = new ChromeDriver(options);                     // Передаём options при создании драйвера
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+
+            driver = new ChromeDriver(options);
 
             baseURL = "http://localhost";   // Запись базового адреса тестируемого сайта в переменную
             Registration = new RegistrationHelper(this);
