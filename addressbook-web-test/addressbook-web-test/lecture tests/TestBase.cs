@@ -16,6 +16,11 @@ namespace WebAddressbookTests                           // Пространст�
             app.Navigator.GoToHomePage();               // Команда хелперу навигации загрузить главную страницу сайта перед началом теста
         }
 
+        public static string GenerateUniqueName(string prefix)
+        {
+            return $"{prefix}_{DateTime.Now:yyyyMMddHHmmssfff}";
+        }
+
         public static Random rnd = new Random();
 
         public static string GenerateRandomString(int max)

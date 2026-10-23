@@ -75,9 +75,11 @@ namespace WebAddressbookTests                           // Пространст�
             if (!IsElementPresent(By.XPath
                 ("//span[" + (index + 1) + "]/input")))     // Проверка: если на странице отсутствует чекбокс группы с указанным порядковым номером
             {
-                GroupData group = new GroupData("test group");    // Подготовка тестовых данных названия новой группы
-                group.Header = "test header";                     // Задание тестового заголовка для новой группы
-                group.Footer = "test footer";                     // Задание тестового подвала для новой группы
+                GroupData group = new GroupData(TestBase.GenerateUniqueName("group"))
+                {
+                    Header = "header",
+                    Footer = "footer"
+                };
 
                 Create(group);                              // Вызываем метод создания группы, чтобы наполнить таблицу данными
             }

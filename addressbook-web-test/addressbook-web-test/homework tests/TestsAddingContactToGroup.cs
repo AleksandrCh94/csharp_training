@@ -9,7 +9,7 @@ namespace WebAddressbookTests
         [Test]
         public void TestAddingContactToGroup()
         {
-            // Precondition: гарантируем, что есть хотя бы одна группа и один контакт
+            // Предусловие: гарантируем, что есть хотя бы одна группа и один контакт
             app.Groups.GetOrCreateGroup(0);
             app.Contacts.GetOrCreateContact(0);
 
@@ -54,7 +54,9 @@ namespace WebAddressbookTests
             // Если подходящей пары не нашлось — все контакты уже во всех группах
             if (group == null)                                       // Если пара так и не найдена
             {
-                contact = new ContactData("test first name", "test last name"); // Создаём новый контакт
+                contact = new ContactData(
+                    TestBase.GenerateUniqueName("first"),
+                    TestBase.GenerateUniqueName("last"));            // Создаём новый контакт с уникальным именем
 
                 app.Contacts.Create(contact);                         // Физически создаём его на сайте
 
@@ -63,17 +65,46 @@ namespace WebAddressbookTests
                 group = groups[0];                                    // Берём первую группу — новый контакт точно ни в одной не состоит
             }
 
+            // ============ Основная часть теста ============
+
             List<ContactData> oldList = group.GetContacts();          // Запоминаем состав группы ДО добавления
 
-            app.Contacts.AddToGroup(contact, group);                   // Выполняем основное действие
+            app.Contacts.AddToGroup(contact, group);                  // Выполняем основное действие
 
             List<ContactData> newList = group.GetContacts();          // Считываем состав группы ПОСЛЕ добавления
 
-            oldList.Add(contact);                                      // Моделируем ожидаемый результат
-            oldList.Sort();
-            newList.Sort();
+            // Проверка 1 (Быстрая): количество контактов должно увеличиться ровно на 1
+            Assert.AreEqual(oldList.Count + 1, newList.Count,
+                "Количество контактов в группе после добавления изменилось неправильно");
 
-            Assert.AreEqual(oldList, newList);                         // Проверяем результат
+            // Проверка 2: добавленный контакт должен присутствовать в группе (ищем по Id)
+            bool contactFound = false;
+            foreach (ContactData c in newList)
+            {
+                if (c.Id == contact.Id)
+                {
+                    contactFound = true;
+                    break;
+                }
+            }
+            Assert.IsTrue(contactFound,
+                $"Контакт с Id={contact.Id} не найден в группе после добавления");
+
+            // Проверка 3 (Дополнительная): все старые контакты должны остаться в группе
+            foreach (ContactData oldContact in oldList)
+            {
+                bool stillThere = false;
+                foreach (ContactData c in newList)
+                {
+                    if (c.Id == oldContact.Id)
+                    {
+                        stillThere = true;
+                        break;
+                    }
+                }
+                Assert.IsTrue(stillThere,
+                    $"Контакт с Id={oldContact.Id} пропал из группы после добавления другого контакта");
+            }
         }
     }
 }

@@ -143,7 +143,11 @@ namespace WebAddressbookTests               // Пространство имен
                 compare = string.Compare(FirstName, other.FirstName, 
                     StringComparison.OrdinalIgnoreCase);            // Сравниваем имена, также без учета регистра букв
             }
-            return compare;                                         // Возвращаем результат: меньше 0 (текущий объект идет раньше), 0 (равны), больше 0 (текущий идет позже)
+            if (compare == 0)
+            {
+                compare = string.Compare(Id, other.Id, StringComparison.Ordinal);
+            }
+            return compare;                                         
         }
 
         public static List<ContactData> GetAll()

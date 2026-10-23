@@ -49,7 +49,15 @@ namespace WebAddressbookTests               // Пространство имен
             {       
                 return 1;                               // Текущий объект признается «большим» и при сортировке сдвигается в конец списка
             }
-            return Name.CompareTo(other.Name);          // Стандартное лексикографическое (алфавитное) сравнение строк названий двух групп
+
+            int compare = string.Compare(Name, other.Name, StringComparison.OrdinalIgnoreCase);
+
+            if (compare == 0)
+            {
+                compare = string.Compare(Id, other.Id, StringComparison.Ordinal);
+            }
+
+            return compare;          
         }
 
         [Column(Name = "group_name")]

@@ -70,8 +70,9 @@ namespace WebAddressbookTests                               // Простран�
                 ("//table[@id='maintable']/tbody/tr" +
                 "[" + (index + 2) + "]/td/input")))             // XPath-локатор чекбокса с инкрементом индекса для пропуска строки заголовков
             {
-                ContactData contact = new ContactData
-                    ("test first name", "test last name");      // Создаем тестовые данные имени нового контакта на случай его отсутствия
+                ContactData contact = new ContactData(
+                    TestBase.GenerateUniqueName("first"),
+                    TestBase.GenerateUniqueName("last"));      // Создаем тестовые данные имени нового контакта на случай его отсутствия
 
                 Create(contact);                                // Вызываем метод создания контакта, чтобы наполнить таблицу данными
             }                                                     
