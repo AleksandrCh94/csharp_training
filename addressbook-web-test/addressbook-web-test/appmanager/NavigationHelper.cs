@@ -1,5 +1,4 @@
-﻿
-using OpenQA.Selenium;                      // Подключение основных интерфейсов библиотеки Selenium WebDriver
+﻿using OpenQA.Selenium;                      // Подключение основных интерфейсов библиотеки Selenium WebDriver
 
 namespace WebAddressbookTests                               // Пространство имен проекта для логического объединения кода
 {
