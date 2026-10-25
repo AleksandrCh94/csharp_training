@@ -36,7 +36,7 @@ namespace mantis_tests                           // Пространство и�
             }
         }
 
-        //Добавил метод Click(By locator), чтобы в GroupHelper/ContactHelper не писать driver.FindElement(...).Click()
+        //Добавил метод Click(By locator), чтобы не писать driver.FindElement(...).Click()
         public void Click(By locator)
         {
             driver.FindElement(locator).Click();

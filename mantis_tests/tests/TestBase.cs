@@ -13,7 +13,7 @@ namespace mantis_tests                           // Пространство и�
         public void InitApplication()                   // Метод подготовки окружения для очередного теста
         {                           
             app = ApplicationManager.GetInstance();     // Запрашиваем у Singleton живой экземпляр менеджера (окно откроется, если это первый тест)
-            app.Driver.Url = "http://localhost/mantisbt-2.28.4/login_page.php";               // Команда хелперу навигации загрузить главную страницу сайта перед началом теста
+            app.Driver.Url = "http://localhost/mantisbt-2.28.4/login_page.php"; // Команда хелперу навигации загрузить главную страницу сайта перед началом теста
         }
     }                               
 }

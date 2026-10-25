@@ -9,11 +9,6 @@ namespace mantis_tests               // Пространство имен про
         private readonly IWebDriver driver;                         // Приватное поле для хранения экземпляра драйвера браузера
         private readonly string baseURL;                            // Приватное поле для хранения базового веб-адреса (URL) приложения
 
-        public RegistrationHelper Registration { get; set; }
-        public FtpHelper Ftp { get; set; }
-        public JamesHelper James { get; set; }
-        public MailHelper Mail { get; set; }
-
         private static ApplicationManager instance;                 // Статическое поле, хранящее единственный экземпляр этого класса во всей программе
 
         private ApplicationManager()                                // Приватный конструктор (запрещает создание через 'new' снаружи класса)
@@ -26,15 +21,17 @@ namespace mantis_tests               // Пространство имен про
             options.AddUserProfilePreference("profile.password_manager_leak_detection", false);
 
             driver = new ChromeDriver(options);                     // Передаём options при создании драйвера
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
 
             driver = new ChromeDriver(options);
 
-            baseURL = "http://localhost";   // Запись базового адреса тестируемого сайта в переменную
+            baseURL = "http://localhost/mantisbt-2.28.4";   // Запись базового адреса тестируемого сайта в переменную
             Registration = new RegistrationHelper(this);
             Ftp = new FtpHelper(this);
             James = new JamesHelper(this);
             Mail = new MailHelper(this);
+            Admin = new AdminHelper(this, baseURL);
+            API = new APIHelper(this);
 
             AppDomain.CurrentDomain.ProcessExit += new EventHandler(OnProcessExit);     // Подписка метода OnProcessExit на событие закрытия приложения операционной системой
         }                                                     
@@ -78,6 +75,18 @@ namespace mantis_tests               // Пространство имен про
         public IWebDriver Driver                              // Свойство для прямого доступа к самому драйверу Selenium
         {                                                     
             get { return driver; }                            // Возвращает скрытое приватное поле driver
-        }                                                     
+        }
+
+        public RegistrationHelper Registration { get; set; }
+
+        public FtpHelper Ftp { get; set; }
+
+        public JamesHelper James { get; set; }
+
+        public MailHelper Mail { get; set; }
+
+        public AdminHelper Admin { get; set; }
+
+        public APIHelper API { get; set; }
     }
 }

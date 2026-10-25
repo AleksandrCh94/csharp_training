@@ -10,15 +10,20 @@ namespace mantis_project_tests
         [Test]
         public void ProjectRemovalTest()
         {
-            app.Project.GetOrCreateProject(0);
+            AccountData account = new AccountData("administrator", "root") { };
 
-            List<ProjectData> oldProjects = app.Project.GetProjectsList();
+            ProjectData project = new ProjectData(TestBase
+                .GenerateUniqueName("project"));
+
+            app.Project.GetOrCreateProject(0, account, project);
+
+            List<ProjectData> oldProjects = app.Project.GetProjectsList(account);
 
             app.Project.Remove(0);                                    
 
             Assert.AreEqual(oldProjects.Count - 1, app.Project.GetProjectsCount()); 
 
-            List<ProjectData> newProjects = app.Project.GetProjectsList();  
+            List<ProjectData> newProjects = app.Project.GetProjectsList(account);  
 
             oldProjects.RemoveAt(0);                                       
 

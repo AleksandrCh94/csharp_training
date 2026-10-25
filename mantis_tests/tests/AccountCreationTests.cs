@@ -17,7 +17,7 @@ namespace mantis_tests
             using (Stream localFile = File.Open("config_inc.php", FileMode.Open))
             {
                 app.Ftp.Upload("/config/config_inc.php", localFile);
-            }                
+            }
         }
 
         [Test]
@@ -25,10 +25,18 @@ namespace mantis_tests
         {
             AccountData account = new AccountData()
             {
-                Name = "testuser26",
+                Name = "testuser",
                 Password = "password26",
                 Email = "testuser26@localhost.localdomain"
             };
+
+            List<AccountData> accounts = app.Admin.GetAllAccounts();
+
+            AccountData existingAccount = accounts.Find(x => x.Name == account.Name);
+            if (existingAccount != null)
+            {
+                app.Admin.DeleteAccount(existingAccount);
+            }
 
             app.James.Delete(account);
             app.James.Add(account);

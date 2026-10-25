@@ -28,18 +28,18 @@ namespace mantis_tests
 
         public void OpenRegistrationPage()
         {
-            driver.FindElement(By.CssSelector("a.back-to-login-link.pull-left")).Click();
+            Click(By.CssSelector("a.back-to-login-link.pull-left"));
         }
 
         public void FillregistrationForm(AccountData account)
         {
-            driver.FindElement(By.Name("username")).SendKeys(account.Name);
-            driver.FindElement(By.Name("email")).SendKeys(account.Email);
+            Type(By.Name("username"), account.Name);
+            Type(By.Name("email"), account.Email);
         }
 
         public void SubmitRegistration()
         {
-            driver.FindElement(By.CssSelector("input[type='submit']")).Click();
+            Click(By.CssSelector("input[type='submit']"));
         }
 
         public string GetConfirmationUrl(AccountData account)
@@ -52,22 +52,22 @@ namespace mantis_tests
         public void FillAccountForm(string url, AccountData account)
         {
             driver.Url = url;
-            driver.FindElement(By.Name("realname")).SendKeys(account.Name);
-            driver.FindElement(By.Name("password")).SendKeys(account.Password);
-            driver.FindElement(By.Name("password_confirm")).SendKeys(account.Password);
+            Type(By.Name("realname"), account.Name);
+            Type(By.Name("password"), account.Password);
+            Type(By.Name("password_confirm"), account.Password);
         }
 
         public void SubmitPasswordForm()
         {
-            driver.FindElement(By.CssSelector("button[type='submit']")).Click();
+            Click(By.CssSelector("button[type='submit']"));
         }
 
         public void Login(AccountData account)
         {
-            driver.FindElement(By.Id("username")).SendKeys(account.Name);
-            driver.FindElement(By.CssSelector("input[value='Вход']")).Submit();
-            driver.FindElement(By.Id("password")).SendKeys(account.Password);
-            driver.FindElement(By.CssSelector("input[value='Вход']")).Submit();
+            Type(By.Id("username"), account.Name);
+            Click(By.CssSelector("input[value='Вход']"));
+            Type(By.Id("password"), account.Password);
+            Click(By.CssSelector("input[value='Вход']"));
         }
 
         public string GetAccountName()

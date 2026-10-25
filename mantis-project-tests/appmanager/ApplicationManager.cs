@@ -1,4 +1,5 @@
-﻿using System;                       
+﻿using System;
+using mantis_tests;
 using OpenQA.Selenium;                     
 using OpenQA.Selenium.Chrome;             
 
@@ -8,10 +9,6 @@ namespace mantis_project_tests
     {
         private readonly IWebDriver driver;                       
         private readonly string baseURL;                           
-
-        public LoginHelper Auth { get; set; }
-        public ProjectHelper Project { get; set; }
-        public NavigationHelper Navigator { get; set; }
 
         private static ApplicationManager instance;               
 
@@ -75,6 +72,12 @@ namespace mantis_project_tests
         public IWebDriver Driver                             
         {                                                     
             get { return driver; }                            
-        }                                                     
+        }
+
+        public LoginHelper Auth { get; set; }
+
+        public ProjectHelper Project { get; set; }
+
+        public NavigationHelper Navigator { get; set; }
     }
 }

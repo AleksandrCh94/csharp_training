@@ -1,7 +1,10 @@
-﻿using OpenQA.Selenium;                      // Основные интерфейсы Selenium
-using OpenQA.Selenium.Support.UI;           // WebDriverWait
-using System;                               // Базовые типы .NET
-using System.Collections.Generic;           // List, ICollection
+﻿using OpenQA.Selenium;                      
+using OpenQA.Selenium.Support.UI;           
+using System;                               
+using System.Buffers.Text;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using mantis_tests.Mantis;
 
 namespace mantis_project_tests
 {
@@ -22,7 +25,7 @@ namespace mantis_project_tests
         }
 
         // Удаляем проект
-        internal void Remove(int index)
+        public void Remove(int index)
         {
             manager.Navigator.GoToProjectsPage();
             GoToProjectPage(index);
@@ -31,16 +34,16 @@ namespace mantis_project_tests
         }
 
         // Проверяем, что список проектов не пустой, иначе создаем проект
-        internal ProjectHelper GetOrCreateProject(int index)
+        public ProjectHelper GetOrCreateProject(int index, AccountData account, ProjectData projectData)
         {
-            if (!IsElementPresent(By.XPath(
-                    $"(//table//tbody//tr//td//a[contains(@href, " +
-                    $"'manage_proj_edit_page.php')])[{index + 1}]")))
-            {
-                ProjectData project = new ProjectData(TestBase
-                    .GenerateUniqueName("project"));
+            List<ProjectData> existingProjects = GetProjectsList(account);
 
-                Create(project);
+            if (existingProjects.Count <= index)
+            {
+                Mantis.MantisConnectPortTypeClient client = new Mantis.MantisConnectPortTypeClient();
+                Mantis.ProjectData project = new Mantis.ProjectData();
+                project.name = projectData.Name;
+                client.mc_project_add(account.Username, account.Password, project);
             }            
             return this;
         }
@@ -64,7 +67,7 @@ namespace mantis_project_tests
         }
 
         // переходим внутрь проекта
-        private void GoToProjectPage(int index)
+        public void GoToProjectPage(int index)
         {
             Click(By.XPath(
         $"(//table//tbody//tr//td//a[contains(@href, " +
@@ -72,13 +75,13 @@ namespace mantis_project_tests
         }
 
         // Нажимаем на кнопку "Удалить"
-        private void RemoveProject()
+        public void RemoveProject()
         {
             Click(By.XPath("//button[contains(@formaction, 'manage_proj_delete.php')]"));
         }
 
         // Подтверждаем удаление проекта нажатием на кнопку "Удалить"
-        private void SubmitRemoveProject()
+        public void SubmitRemoveProject()
         {
             Click(By.XPath("//input[@value='Удалить проект']"));
         }
@@ -91,18 +94,22 @@ namespace mantis_project_tests
         }
 
         // Получаем список проектов
-        public List<ProjectData> GetProjectsList()
+        public List<ProjectData> GetProjectsList(AccountData account)
         {
-            manager.Navigator.GoToProjectsPage();
+            Mantis.MantisConnectPortTypeClient client = new Mantis.MantisConnectPortTypeClient();
+
+            Mantis.ProjectData[] mantisProjects =
+                client.mc_projects_get_user_accessible(account.Username, account.Password);
 
             List<ProjectData> projects = new List<ProjectData>();
 
-            ICollection<IWebElement> elements = driver.FindElements(
-                By.XPath("//table//tbody//tr//td//a[contains(@href, 'manage_proj_edit_page.php')]"));
-
-            foreach (IWebElement element in elements)
+            foreach (Mantis.ProjectData mantisProject in mantisProjects)
             {
-                projects.Add(new ProjectData(element.Text));
+                projects.Add(new ProjectData
+                {
+                    Id = mantisProject.id, 
+                    Name = mantisProject.name
+                });
             }
 
             return projects;
