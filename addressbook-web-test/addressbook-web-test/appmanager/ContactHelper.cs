@@ -66,6 +66,7 @@ namespace WebAddressbookTests                               // Простран�
 
         public ContactHelper GetOrCreateContact(int index)      // Метод обеспечения предусловия: получение существующего контакта или его автосоздание при отсутствии
         {
+            manager.Navigator.GoToHomePage();
             if (!IsElementPresent(By.XPath                      // Проверка: если в таблице по указанному смещенному индексу строки отсутствует чекбокс контакта
                 ("//table[@id='maintable']/tbody/tr" +
                 "[" + (index + 2) + "]/td/input")))             // XPath-локатор чекбокса с инкрементом индекса для пропуска строки заголовков

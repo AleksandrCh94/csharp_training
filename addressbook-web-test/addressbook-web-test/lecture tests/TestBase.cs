@@ -18,7 +18,7 @@ namespace WebAddressbookTests                           // Пространст�
 
         public static string GenerateUniqueName(string prefix)
         {
-            return $"{prefix}_{DateTime.Now:yyyyMMddHHmmssfff}";
+            return $"{prefix}_{DateTime.Now:mmssfff}";
         }
 
         public static Random rnd = new Random();
