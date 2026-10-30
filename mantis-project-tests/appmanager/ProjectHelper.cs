@@ -33,21 +33,6 @@ namespace mantis_project_tests
             SubmitRemoveProject();
         }
 
-        // Проверяем, что список проектов не пустой, иначе создаем проект
-        public ProjectHelper GetOrCreateProject(int index, AccountData account, ProjectData projectData)
-        {
-            List<ProjectData> existingProjects = GetProjectsList(account);
-
-            if (existingProjects.Count <= index)
-            {
-                Mantis.MantisConnectPortTypeClient client = new Mantis.MantisConnectPortTypeClient();
-                Mantis.ProjectData project = new Mantis.ProjectData();
-                project.name = projectData.Name;
-                client.mc_project_add(account.Username, account.Password, project);
-            }            
-            return this;
-        }
-
         // Нажимаем на кнопку "Создать проект"
         public void InitNewProjectCreation()
         {
@@ -113,6 +98,21 @@ namespace mantis_project_tests
             }
 
             return projects;
+        }
+
+        // Проверяем, что список проектов не пустой, иначе создаем проект
+        public ProjectHelper GetOrCreateProject(int index, AccountData account, ProjectData projectData)
+        {
+            List<ProjectData> existingProjects = GetProjectsList(account);
+
+            if (existingProjects.Count <= index)
+            {
+                Mantis.MantisConnectPortTypeClient client = new Mantis.MantisConnectPortTypeClient();
+                Mantis.ProjectData project = new Mantis.ProjectData();
+                project.name = projectData.Name;
+                client.mc_project_add(account.Username, account.Password, project);
+            }
+            return this;
         }
     }
 }
